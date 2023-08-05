@@ -9,20 +9,22 @@ def activation_function_from_str(x: str):
         return sigmoid
     if x.lower() == "relu":
         return relu
+    
+    raise ValueError("Invalid activation function")
 
 def sigmoid(
-    x: int | float | np.integer | np.floating
+    x: int | float | np.integer | np.floating | list
 ) -> np.number:
-
+    if isinstance(x, list):
+        return [1.0/(1+np.exp(-x_i)) for x_i in x]
     return 1.0/(1+np.exp(-x))
 
 
 def relu(
-    x: int | float | np.integer | np.floating
+    x: int | float | np.integer | np.floating | list
 ) -> np.number:
     
-    if not isinstance(x, np.floating) and not isinstance(x, np.integer):
-        # If x is s a python native data type, convert to numpy dtype
-        return np.float64(x) if x > 0 else 0
+    if isinstance(x, list) or isinstance(x, np.ndarray) or isinstance(x, np.array):
+        return [np.float64(x_i) if x_i > 0 else 0 for x_i in x]
     
-    return x if x > 0 else 0
+    return np.float64(x) if x > 0 else 0
