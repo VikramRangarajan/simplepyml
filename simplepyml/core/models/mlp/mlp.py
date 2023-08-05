@@ -52,7 +52,6 @@ class MLP():
 
         # Calculates the activations for each following layer
         for i, layer in enumerate(self.layers):
-            print(i)
             if i == 0:
                 # Sets the first layer's activations as the input
                 layer.activation = layer.activation_func(np.array(input, dtype=np.float64))
