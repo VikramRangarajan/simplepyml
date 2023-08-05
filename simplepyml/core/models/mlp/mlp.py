@@ -49,12 +49,17 @@ class MLP():
                 f"Invalid Input Size, received list of size {len(input)}, expected list of size {self.layers[0].size}"
             )
         
-        # Sets the first layer's activations as the input
-        self.layers[0].activation = np.array(input, dtype=np.float64)
 
         # Calculates the activations for each following layer
-        for i, weights in enumerate(self.weights):
-            self.layers[i+1].activation = self.layers[i].activation_func(np.matmul(weights, self.layers[i].activation) + self.biases[i])
+        for i, layer in enumerate(self.layers):
+            print(i)
+            if i == 0:
+                # Sets the first layer's activations as the input
+                layer.activation = layer.activation_func(np.array(input, dtype=np.float64))
+                print([layer.activation for layer in self.layers])
+                continue
+            layer.activation = layer.activation_func(np.matmul(self.weights[i-1], self.layers[i-1].activation) + self.biases[i-1])
+            print([layer.activation for layer in self.layers])
         
         # Returns the result, which is the final layer's activations
         return self.layers[-1].activation
