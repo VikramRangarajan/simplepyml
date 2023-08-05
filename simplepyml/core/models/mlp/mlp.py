@@ -56,10 +56,19 @@ class MLP():
             if i == 0:
                 # Sets the first layer's activations as the input
                 layer.activation = layer.activation_func(np.array(input, dtype=np.float64))
-                print([layer.activation for layer in self.layers])
                 continue
+
+            # a_i = func(w_(i-1) * a_(i-1) + bias_(i-1))
             layer.activation = layer.activation_func(np.matmul(self.weights[i-1], self.layers[i-1].activation) + self.biases[i-1])
-            print([layer.activation for layer in self.layers])
         
         # Returns the result, which is the final layer's activations
         return self.layers[-1].activation
+    
+    # TODO: Implement Everything + Batching Later
+    def train(
+        self, 
+        input_data: np.ndarray, 
+        output_data, 
+        epochs
+    ):
+        pass
