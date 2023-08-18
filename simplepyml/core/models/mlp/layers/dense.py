@@ -24,6 +24,10 @@ class Dense(Layer):
             self.activation_func = activation
 
         self.activation = np.zeros(shape=size, dtype=np.float64)
+
+        # Activation values before put through activation function,
+        # used for calculating gradient in SGD
+        self.z = np.zeros(shape=size, dtype=np.float64)
         self.size = size
 
         self.dropout = dropout

@@ -54,11 +54,13 @@ class MLP():
         for i, layer in enumerate(self.layers):
             if i == 0:
                 # Sets the first layer's activations as the input
-                layer.activation = layer.activation_func(np.array(input, dtype=np.float64))
+                layer.z = np.array(input, dtype=np.float64)
+                layer.activation = layer.activation_func(layer.z)
                 continue
 
             # a_i = func(w_(i-1) * a_(i-1) + bias_(i-1))
-            layer.activation = layer.activation_func(np.matmul(self.weights[i-1], self.layers[i-1].activation) + self.biases[i-1])
+            layer.z = np.matmul(self.weights[i-1], self.layers[i-1].activation) + self.biases[i-1]
+            layer.activation = layer.activation_func(layer.z)
         
         # Returns the result, which is the final layer's activations
         return self.layers[-1].activation
@@ -70,4 +72,9 @@ class MLP():
         output_data, 
         epochs
     ):
-        pass
+        self.optimizer(
+            self, 
+            input_data=input_data, 
+            output_data=output_data, 
+            epochs=epochs
+        )
