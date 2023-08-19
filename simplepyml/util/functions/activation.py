@@ -8,6 +8,8 @@ def activation_function_from_str(x: str):
         return sigmoid
     if x.lower() == "relu":
         return relu
+    if x.lower() == "linear":
+        return linear
     
     raise ValueError("Invalid activation function")
 

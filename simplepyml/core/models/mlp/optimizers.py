@@ -32,13 +32,14 @@ def sgd(
 
         # dLdw = gradient of loss function with respect to weights (average of all dLdw_i's)
         dLdw = [
-            np.zeros(shape=weight_layer.shape) for weight_layer in model.weights
+            np.zeros(shape = weight_layer.shape) for weight_layer in model.weights
         ]
         # dLdb = gradient of loss function with respect to biases (average of all dLdb_i's)
         dLdb = [
             np.zeros(shape = bias_layer.shape) for bias_layer in model.biases
         ]
         for input_data_index, input in enumerate(input_data):
+            print(f"\rInput {input_data_index}/{len(input_data)}", end="\r")
             output = output_data[input_data_index]
             model.evaluate(input=input)
             curr_loss += model.loss(values=model.layers[-1].activation, expected = output)
@@ -61,75 +62,58 @@ def sgd(
 
             last_layer = True
             # Traverse through layers starting from the end
-            for layer_index in range(len(model.layers) - 1, -1, -1):
-                print(model.layers[layer_index].activation)
-                # For unique computation for gradient of last layer
-                if last_layer:
-                    dLda[layer_index] = deriv(model.loss)(model.layers[layer_index].activation, np.array(output))
 
-                    for i, row in enumerate(model.weights[layer_index - 1]):
+            # Custom dLda for last layer:
 
-                        dLdb_i[layer_index - 1][i] = (
-                            dLda[layer_index][i] *
-                            deriv(model.layers[layer_index].activation_func)(
-                                model.layers[layer_index].z
-                            )
+            dLda[-1] = deriv(model.loss)(model.layers[-1].activation, np.array(output))
+
+            # Iterate backwards, excluding last layer since we calculated dLda for that already
+            for layer_index in range(len(model.layers) - 2, -1, -1):
+                # print(model.weights[layer_index])
+
+                # Calculating dLda for this layer
+                for i in range(len(dLda[layer_index])):
+                    dLda[layer_index][i] = 0
+                    for k in range(len(model.layers[layer_index + 1].activation)):
+                        dLda[layer_index][i] += (
+                            dLda[layer_index + 1][k] *
+                            deriv(model.layers[layer_index + 1].activation_func)(
+                                model.layers[layer_index + 1].z[k]
+                            ) *
+                            model.weights[layer_index][k][i]
                         )
-                        
-                        for j in range(len(row)):
-                            dLdw_i[layer_index - 1][i][j] = (
-                                dLda[layer_index][i] *
-                                deriv(model.layers[layer_index].activation_func)(
-                                    model.layers[layer_index].z
-                                ) * 
-                                model.layers[layer_index - 1].activation[j]
-                            )
-                            
-                            
-                    last_layer = False
-                else:
-                    # Calculating dLda for this layer
-                    for i in range(len(dLda[layer_index])):
-                        dLda[layer_index][i] = 0
-                        for k in range(len(model.layers[layer_index + 1].activation)):
-                            dLda[layer_index][i] += (
-                                dLda[layer_index + 1][i] *
-                                deriv(model.layers[layer_index + 1].activation_func)(
-                                    model.layers[layer_index + 1].z[k]
-                                ) *
-                                model.weights[layer_index][k][i]
-                            )
 
-                    # Calculating dLdw_i and dLdb_i for this layer
-                    for i, row in enumerate(model.weights[layer_index - 1]):
-
-                        dLdb_i[layer_index - 1][i] = (
-                            dLda[layer_index][i] *
-                            deriv(model.layers[layer_index].activation_func)(
-                                model.layers[layer_index].z
-                            )
+                # Calculating dLdb_i for this layer
+                for i in range(len(model.biases[layer_index])):
+                    dLdb_i[layer_index][i] = (
+                        dLda[layer_index + 1][i] *
+                        deriv(model.layers[layer_index + 1].activation_func)(
+                            model.layers[layer_index + 1].z[i]
                         )
-                        
-                        for j in range(len(row)):
-                            dLdw_i[layer_index - 1][i][j] = (
-                                dLda[layer_index][i] *
-                                deriv(model.layers[layer_index].activation_func)(
-                                    model.layers[layer_index].z
-                                ) * 
-                                model.layers[layer_index - 1].activation[j]
-                            )
+                    )
+
+                # Calculating dLdw_i for this layer
+                for i in range(len(model.weights[layer_index])):                    
+                    for j in range(len(model.weights[layer_index][i])):
+                        dLdw_i[layer_index][i][j] = (
+                            dLda[layer_index + 1][i] *
+                            deriv(model.layers[layer_index + 1].activation_func)(
+                                model.layers[layer_index + 1].z[i]
+                            ) * 
+                            model.layers[layer_index].activation[j]
+                        )
             for i in range(len(dLdw)):
-                dLdw += dLdw_i
+                dLdw[i] += dLdw_i[i]
             for i in range(len(dLdb)):
-                dLdb += dLdb_i
+                dLdb[i] += dLdb_i[i]
         for w in dLdw:
-            dLdw /= len(input_data)
+            w /= len(input_data)
         for b in dLdb:
             b /= len(input_data)
         
         for i in range(len(model.weights)):
-            model.weights[i] += dLdw[i] * learning_rate
+            model.weights[i] -= dLdw[i] * learning_rate
         for i in range(len(model.biases)):
-            model.biases[i] += dLdb[i] * learning_rate
+            model.biases[i] -= dLdb[i] * learning_rate
         curr_loss /= len(input_data)
         print(f"Current Loss: {curr_loss}")

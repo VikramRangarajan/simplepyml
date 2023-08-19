@@ -1,4 +1,4 @@
-from activation import (
+from .activation import (
     sigmoid,
     sigmoid_deriv,
     relu,
@@ -6,13 +6,13 @@ from activation import (
     linear,
     linear_deriv,
 )
-from loss import (
+from .loss import (
     mse,
     mse_deriv,
 )
 # Returns the derivative of the input activation function. Accepts function pointers.
 # Ex: deriv(sigmoid) = sigmoid_deriv
-def deriv(f: function):
+def deriv(f):
     if f == sigmoid:
         return sigmoid_deriv
     if f == relu:
