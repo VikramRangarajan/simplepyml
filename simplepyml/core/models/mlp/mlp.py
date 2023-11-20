@@ -1,7 +1,9 @@
 # Multi Layer Perceptron Model
 import numpy as np
+import random
 from simplepyml.core.models.mlp.layers.layer import Layer
 
+# random.seed(0)
 # MLP - Multi Level Perceptron Neural Network
 class MLP():
     def __init__(
@@ -23,17 +25,18 @@ class MLP():
     # Initializes the weight matrix and bias vector for each layer
     def initialize_weights_and_biases(self):
         self.weights = [
-            np.random.normal(
+            np.random.uniform(
                 size = (self.layers[i+1].size, self.layers[i].size),
-                loc=0
-            ) for i in range(len(self.layers) - 1)
+                low=-1,
+                high=1
+              ) for i in range(len(self.layers) - 1)
         ]
 
-
         self.biases = [
-            np.random.normal(
+            np.random.uniform(
                 size = self.layers[i+1].size,
-                loc=0
+                low=-1,
+                high=1
             ) for i in range(len(self.layers) - 1)
         ]
 

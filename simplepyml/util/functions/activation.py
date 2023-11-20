@@ -17,16 +17,16 @@ def activation_function_from_str(x: str):
 def sigmoid(
     x: int | float | np.integer | np.floating | list
 ) -> np.number:
-    if isinstance(x, list) or isinstance(x, np.ndarray):
-        return np.array([1.0/(1+np.exp(-x_i)) for x_i in x])
+    # if isinstance(x, list) or isinstance(x, np.ndarray):
+    #     return np.array([1.0/(1+np.exp(-x_i)) for x_i in x])
     return 1.0/(1+np.exp(-x))
 
 # Derivative of sigmoid function. Returns sigmoid(x)*(1-sigmoid(x))
 def sigmoid_deriv(
     x: int | float | np.integer | np.floating | list
 ) -> np.number:
-    if isinstance(x, list) or isinstance(x, np.ndarray):
-        return np.array([sigmoid(x_i)*(1-sigmoid(x_i)) for x_i in x])
+    # if isinstance(x, list) or isinstance(x, np.ndarray):
+    #     return np.array([sigmoid(x_i)*(1-sigmoid(x_i)) for x_i in x])
     return sigmoid(x)*(1-sigmoid(x))
 
 
