@@ -9,6 +9,8 @@ from .activation import (
 from .loss import (
     mse,
     mse_deriv,
+    scce,
+    scce_deriv,
 )
 # Returns the derivative of the input activation function. Accepts function pointers.
 # Ex: deriv(sigmoid) = sigmoid_deriv
@@ -21,5 +23,7 @@ def deriv(f):
         return mse_deriv
     if f == linear:
         return linear_deriv
+    if f == scce:
+        return scce_deriv
     
     raise ValueError("Invalid activation function")
