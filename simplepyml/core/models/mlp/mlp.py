@@ -19,26 +19,6 @@ class MLP():
             self.layers = [layers]
         else:
             self.layers = layers
-        self.initialize_weights_and_biases()
-
-
-    # Initializes the weight matrix and bias vector for each layer
-    def initialize_weights_and_biases(self):
-        self.weights = [
-            np.random.uniform(
-                size = (self.layers[i+1].size, self.layers[i].size),
-                low=-1,
-                high=1
-              ) for i in range(len(self.layers) - 1)
-        ]
-
-        self.biases = [
-            np.random.uniform(
-                size = self.layers[i+1].size,
-                low=-1,
-                high=1
-            ) for i in range(len(self.layers) - 1)
-        ]
 
     # Add layers to the MLP neural network
     def append_layers(self, layer: Layer | list[Layer]):
@@ -46,33 +26,20 @@ class MLP():
             self.layers.extend(layer)
         else:
             self.layers.append(layer)
-        self.initialize_weights_and_biases()
     
     def evaluate(self, input: np.ndarray | list):
-        if len(input) != self.layers[0].size:
-            raise ValueError(
-                f"Invalid Input Size, received list of size {len(input)}, expected list of size {self.layers[0].size}"
-            )
-        
-        self.layers[0].z = np.array(input, dtype=np.float64)
-        self.layers[0].activation = self.layers[0].activation_func(self.layers[0].z)
-        # Calculates the activations for each following layer
-        for i, layer in enumerate(self.layers):
-            if i == 0:
-                continue
-
-            # a_i = func(w_(i-1) * a_(i-1) + bias_(i-1))
-            layer.z = np.matmul(self.weights[i-1], self.layers[i-1].activation) + self.biases[i-1]
-            layer.activation = layer.activation_func(layer.z)        
-        # Returns the result, which is the final layer's activations
-        return self.layers[-1].activation
+        inp = self.layers[0](input)
+        for i in range(1, len(self.layers)):
+            inp = self.layers[i](inp)
+        return inp
     
-    # TODO: Implement Everything + Batching Later
+    # TODO: Implement Batching
     def train(
         self, 
         input_data: np.ndarray, 
         output_data, 
         epochs,
+        *args,
         **kwargs
     ):
         self.optimizer(
@@ -80,5 +47,6 @@ class MLP():
             input_data=input_data, 
             output_data=output_data, 
             epochs=epochs,
+            *args,
             **kwargs
         )

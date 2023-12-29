@@ -5,10 +5,7 @@ class Linear(BaseActivation):
     def __init__(self):
         ...
     
-    def __call__(
-        self,
-        x: int | float | np.integer | np.floating | list
-    ) -> np.float64 | np.ndarray:
+    def __call__(self, x):
         return x
     
     def deriv(
