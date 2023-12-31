@@ -24,6 +24,8 @@ class Dense(Layer):
         self.z = np.zeros(shape=size, dtype=np.float64)
         self.size = size
 
+        self.grad = dict()
+
         self.dropout = dropout
         self.initialized = False
 
@@ -41,6 +43,6 @@ class Dense(Layer):
 
     def back_grad(self, dLda: np.ndarray):
         phi_prime_z = self.activation_func.deriv(self.z)
-        self.dLdb = np.multiply(dLda, phi_prime_z)
-        self.dLdX = self.params["weights"].T@self.dLdb
-        self.dLdw = np.reshape(self.dLdb, (1, -1)).T@np.reshape(self.input_array, (1, -1))
+        self.grad["biases"] = np.multiply(dLda, phi_prime_z)
+        self.grad["input"] = self.params["weights"].T@self.grad["biases"]
+        self.grad["weights"] = np.reshape(self.grad["biases"], (1, -1)).T@np.reshape(self.input_array, (1, -1))
