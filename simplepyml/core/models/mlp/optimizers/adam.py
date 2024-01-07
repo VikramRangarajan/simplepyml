@@ -8,10 +8,10 @@ class Adam(Optimizer):
 
     def __call__(
         self,
-        model, 
+        model,
         input_data: np.ndarray,
         output_data: np.ndarray,
-        epochs,
+        epochs: int | np.integer,
         learning_rate = 0.01,
     ):
         avg = 0
@@ -63,13 +63,8 @@ class Adam(Optimizer):
                     for param in layer.params.keys():
                         setattr(layer, f"_adam_m_{param}", np.zeros(shape=layer.params[param].shape))
                         setattr(layer, f"_adam_v_{param}", np.zeros(shape=layer.params[param].shape))
-                    # layer._adam_m = np.zeros(shape=layer.params["weights"].shape)
-                    # layer._adam_m_bias = np.zeros(shape=layer.params["biases"].shape)
-                    # layer._adam_v = np.zeros(shape=layer.params["weights"].shape)
-                    # layer._adam_v_bias = np.zeros(shape=layer.params["biases"].shape)
                 layer.back_grad(dLda_next)
                 dLda_next = layer.grad["input"]
-                # dLda_next = layer.dLdX
 
                 for param in layer.params.keys():
                     setattr(
@@ -86,20 +81,6 @@ class Adam(Optimizer):
                     v_hat = getattr(layer, f"_adam_v_{param}") / (1-(beta_2**adam_t))
 
                     layer.params[param] -= learning_rate * m_hat/(np.sqrt(v_hat) + epsilon)
-                # layer._adam_m = beta_1 * layer._adam_m + (1 - beta_1) * layer.dLdw
-                # layer._adam_m_bias = beta_1 * layer._adam_m_bias + (1 - beta_1) * layer.dLdb
-                
-                # layer._adam_v = beta_2*layer._adam_v + (1 - beta_2) * np.square(layer.dLdw)
-                # layer._adam_v_bias = beta_2*layer._adam_v_bias + (1 - beta_2) * np.square(layer.dLdb)
-
-                # m_hat = layer._adam_m / (1-(beta_1**adam_t))
-                # m_hat_bias = layer._adam_m_bias / (1-beta_1**adam_t)
-                
-                # v_hat = layer._adam_v / (1-(beta_2**adam_t))
-                # v_hat_bias = layer._adam_v_bias / (1-beta_2**adam_t)
-
-                # layer.params["weights"] -= learning_rate*m_hat/(np.sqrt(v_hat) + epsilon)
-                # layer.params["biases"] -= learning_rate*m_hat_bias/(np.sqrt(v_hat_bias) + epsilon)
             adam_t += 1
         for layer_index in range(len(model.layers) - 1, -1, -1):
             layer = model.layers[layer_index]

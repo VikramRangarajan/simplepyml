@@ -6,10 +6,13 @@ class Dense(Layer):
     def __init__(
         self,
         size: int | np.integer,
-        activation: str,
+        activation,
         dropout: float | np.floating = 0.0,
+        *args,
+        **kwargs,
     ):
         size = int(size)
+        # TODO: dropout
         dropout = float(dropout)
         
         if size < 1:
@@ -17,11 +20,6 @@ class Dense(Layer):
 
         self.activation_func = activation
 
-        self.activation = np.zeros(shape=size, dtype=np.float64)
-
-        # Activation values before put through activation function,
-        # used for calculating gradient vectors
-        self.z = np.zeros(shape=size, dtype=np.float64)
         self.size = size
 
         self.grad = dict()
@@ -29,14 +27,18 @@ class Dense(Layer):
         self.dropout = dropout
         self.initialized = False
 
+    def _init_layer(self, input_array):
+        self.initialized = True
+        input_size = input_array.shape[-1]
+        self.params = {
+            "weights": np.random.uniform(size=(self.size, input_size), low=-1, high=1),
+            "biases": np.random.uniform(size=self.size, low=-1, high=1)
+        }
+        self.param_num = self.params["weights"].size + self.params["biases"].size
+
     def __call__(self, input_array: np.ndarray):
         if not self.initialized:
-            self.initialized = True
-            input_size = input_array.shape[-1]
-            self.params = {
-                "weights": np.random.uniform(size=(self.size, input_size), low=-1, high=1),
-                "biases": np.random.uniform(size=self.size, low=-1, high=1)
-            }
+            self._init_layer(input_array)
         self.input_array = input_array
         self.z = self.params["weights"]@input_array + self.params["biases"]
         return self.activation_func(self.z)
