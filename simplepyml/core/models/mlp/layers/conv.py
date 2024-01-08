@@ -14,6 +14,7 @@ class Conv(Layer):
         *args,
         **kwargs,
     ):
+        super().__init__()
         num_filters = int(num_filters)
         dropout = float(dropout)
 
@@ -28,7 +29,6 @@ class Conv(Layer):
 
         # TODO: Dropout
         self.dropout = dropout
-        self.initialized = False
 
     '''
     input_array shape: (# channels (RGB, etc.), x, y, z, w, ...)
@@ -37,7 +37,6 @@ class Conv(Layer):
     def _init_layer(self, input_array):
         self.initialized = True
         self.num_channels = input_array.shape[0]
-        self.params = dict()
         self.params["kernels"] = np.random.uniform(
             low=-1,
             high=1,
@@ -52,7 +51,7 @@ class Conv(Layer):
             size=(self.num_filters,) + tuple(
                 a - b + 1 for (a, b) in zip(
                     input_array.shape[1:],
-                    self.filter_shape
+                    self.filter_shape,
                 )
             )
         )
@@ -96,13 +95,13 @@ class Conv(Layer):
                     self.input_array[c],
                     self.grad["biases"][n],
                     mode="valid",
-                    method="fft"
+                    method="fft",
                 )
                 self.grad["input"] += convolve(
-                    dLda[c],
+                    dLda[n],
                     self.params["kernels"][n][c],
                     mode="full",
-                    method="fft"
+                    method="fft",
                 )
         
         

@@ -26,3 +26,7 @@ class Reshape(Layer):
 
     def back_grad(self, dLda: np.ndarray):
         self.grad["input"] = np.reshape(dLda, self.input_shape)
+
+# Returns a layer that flattens its input
+def Flatten():
+    return Reshape((-1,))

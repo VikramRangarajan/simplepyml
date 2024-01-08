@@ -11,6 +11,7 @@ class Dense(Layer):
         *args,
         **kwargs,
     ):
+        super().__init__()
         size = int(size)
         # TODO: dropout
         dropout = float(dropout)
@@ -25,15 +26,12 @@ class Dense(Layer):
         self.grad = dict()
 
         self.dropout = dropout
-        self.initialized = False
 
     def _init_layer(self, input_array):
         self.initialized = True
         input_size = input_array.shape[-1]
-        self.params = {
-            "weights": np.random.uniform(size=(self.size, input_size), low=-1, high=1),
-            "biases": np.random.uniform(size=self.size, low=-1, high=1)
-        }
+        self.params["weights"] = np.random.uniform(size=(self.size, input_size), low=-1, high=1)
+        self.params["biases"] = np.random.uniform(size=self.size, low=-1, high=1)
         self.param_num = self.params["weights"].size + self.params["biases"].size
 
     def __call__(self, input_array: np.ndarray):

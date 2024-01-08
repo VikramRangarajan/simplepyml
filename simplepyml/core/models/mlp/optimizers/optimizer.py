@@ -16,6 +16,7 @@ class Optimizer():
         )
     
     def print_epoch(epoch_num, num_epochs, accuracy, loss, start_time):
+        print("\n")
         print(f"Epoch {epoch_num+1}/{num_epochs}")
         print()
         print("Current Loss: {:.3f}".format(loss))

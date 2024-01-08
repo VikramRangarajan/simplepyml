@@ -1,10 +1,10 @@
 # Layer superclass
 
 class Layer():
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.params = dict()
         self.param_num = 0
-        raise TypeError("Layer object is not supposed to be declared!")
+        self.initialized = False
     
     def __call__():
         ...
