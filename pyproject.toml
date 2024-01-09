@@ -1,0 +1,25 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "numpy>=1.19",
+    "scipy>=1.9.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simplepyml_VikramRangarajan"
+version = "0.0.1"
+authors = [
+    {name="Vikram Rangarajan", email="vikram.rangaraja@gmail.com"},
+]
+description = "A small example package"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Homepage = "https://github.com/VikramRangarajan/simplepyml"
+Issues = "https://github.com/VikramRangarajan/simplepyml/issues"

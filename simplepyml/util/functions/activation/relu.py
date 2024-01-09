@@ -9,19 +9,15 @@ class Relu(BaseActivation):
         self,
         x: int | float | np.integer | np.floating | list | np.ndarray
     ) -> np.float64 | np.ndarray:
-        func = lambda x: np.float64(x) if x > 0 else np.float64(0)
-        func = np.vectorize(func)
-        if isinstance(x, list):
-            x = np.array(x)
-        return func(x)
+        y = np.asarray(x)
+        y[y < 0] = 0
+        return y
     
     def deriv(
         self,
         x: int | float | np.integer | np.floating | list | np.ndarray
     ) -> np.float64 | np.ndarray:
-        func = lambda x: np.float64(1) if x > 0 else np.float64(0)
-        func = np.vectorize(func)
-        if isinstance(x, list):
-            x = np.array(x)
-        
-        return func(x)
+        y = np.asarray(x)
+        y[y <= 0] = 0
+        y[y > 0] = 1
+        return y

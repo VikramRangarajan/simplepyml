@@ -1,15 +1,17 @@
 from scipy.signal import correlate, convolve
 from simplepyml.core.models.mlp.layers.layer import Layer
 import numpy as np
+from typing import Callable
+
 
 # N-Dimensional Convolutional layer
 # TODO: Padding?
 class Conv(Layer):
     def __init__(
         self,
-        activation,
-        num_filters,
-        filter_shape,
+        activation: Callable[[np.ndarray], np.ndarray],
+        num_filters: int | np.integer,
+        filter_shape: tuple,
         dropout: float | np.floating = 0.0,
         *args,
         **kwargs,
@@ -30,10 +32,11 @@ class Conv(Layer):
         # TODO: Dropout
         self.dropout = dropout
 
-    '''
+    """
     input_array shape: (# channels (RGB, etc.), x, y, z, w, ...)
     filter_shape: (x', y', z', w', ...). Dims = input_array.ndims - 1
-    '''
+    """
+
     def _init_layer(self, input_array):
         self.initialized = True
         self.num_channels = input_array.shape[0]
@@ -43,28 +46,30 @@ class Conv(Layer):
             size=(
                 self.num_filters,
                 self.num_channels,
-            ) + self.filter_shape
+            )
+            + self.filter_shape,
         )
         self.params["biases"] = np.random.uniform(
             low=-1,
             high=-1,
-            size=(self.num_filters,) + tuple(
-                a - b + 1 for (a, b) in zip(
+            size=(self.num_filters,)
+            + tuple(
+                a - b + 1
+                for (a, b) in zip(
                     input_array.shape[1:],
                     self.filter_shape,
                 )
-            )
+            ),
         )
         self.param_num = self.params["kernels"].size + self.params["biases"].size
 
-    
     def __call__(self, input_array: np.ndarray):
         if not self.initialized:
             self._init_layer(input_array)
         self.input_array = input_array
         self.z = np.zeros(shape=self.params["biases"].shape)
         for i in range(self.num_filters):
-            '''
+            """
             Equivalent Way of Calculating Correlation
             for j in range(self.num_channels):
                 self.z[i] += correlate(
@@ -73,16 +78,15 @@ class Conv(Layer):
                     mode="valid",
                     method="fft"
                 )
-            '''
+            """
             self.z[i] = correlate(
-                input_array, 
-                self.params["kernels"][i], 
+                input_array,
+                self.params["kernels"][i],
                 mode="valid",
                 method="fft",
             )
         self.z += self.params["biases"]
         return self.activation_func(self.z)
-
 
     def back_grad(self, dLda: np.ndarray):
         phi_prime_z = self.activation_func.deriv(self.z)
@@ -103,5 +107,3 @@ class Conv(Layer):
                     mode="full",
                     method="fft",
                 )
-        
-        

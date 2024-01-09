@@ -8,7 +8,7 @@ class BaseActivation:
     def deriv(self, *args, **kwargs):
         ...
 '''
-TODO
+TODO: String to correct activation func
 def activation_function_from_str(x: str):
     x = x.lower().strip()
     if x == "sigmoid":
