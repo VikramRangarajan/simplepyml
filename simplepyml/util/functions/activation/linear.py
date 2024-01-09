@@ -1,4 +1,4 @@
-from .activation import BaseActivation
+from simplepyml.util.functions.activation.activation import BaseActivation
 import numpy as np
 
 
@@ -13,4 +13,4 @@ class Linear(BaseActivation):
         self, x: int | float | np.integer | np.floating | list
     ) -> np.float64 | np.ndarray:
         x = np.asarray(x)
-        return np.ones(shape=x.shape)
+        return np.ones(shape=x.shape, dtype=np.float64)

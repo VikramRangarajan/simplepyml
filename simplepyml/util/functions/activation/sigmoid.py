@@ -1,4 +1,4 @@
-from .activation import BaseActivation
+from simplepyml.util.functions.activation.activation import BaseActivation
 import numpy as np
 
 

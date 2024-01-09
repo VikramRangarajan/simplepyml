@@ -49,6 +49,6 @@ class Dense(Layer):
         phi_prime_z = self.activation_func.deriv(self.z)
         self.grad["biases"] = np.multiply(dLda, phi_prime_z)
         self.grad["input"] = self.params["weights"].T @ self.grad["biases"]
-        self.grad["weights"] = np.reshape(self.grad["biases"], (1, -1)).T @ np.reshape(
+        self.grad["weights"] = np.reshape(self.grad["biases"], (-1, 1)) @ np.reshape(
             self.input_array, (1, -1)
         )

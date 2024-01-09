@@ -101,8 +101,7 @@ class Pooling(Layer):
             self._init_layer(input_array)
         self.input_array = input_array
         mat = input_array[self._cut_matrix_index_tuple].reshape(self._indexed_cut_shape)
-        self.z = self.pool_function(mat, axis=self._over_axes)
-        return self.z
+        return self.pool_function(mat, axis=self._over_axes, dtype=np.float64)
 
     def zoom(self, arr):
         return np.pad(
@@ -110,11 +109,12 @@ class Pooling(Layer):
         )
 
     def back_grad(self, dLda: np.ndarray):
-        zoomed = self.zoom(dLda)
+        self.grad["input"] = self.zoom(dLda)
         if self.pool_function == np.max:
-            zoomed[zoomed != self.input_array] = 0
-            self.grad["input"] = zoomed
+            self.grad["input"][self.grad["input"] != self.input_array] = 0
         elif self.pool_function == np.mean:
-            self.grad["input"] = zoomed / self.pooling_size
+            self.grad["input"] /= self.pooling_size
+        elif self.pool_function == np.sum:
+            return
         else:
             raise NotImplementedError("Gradient for this function is not implemented")

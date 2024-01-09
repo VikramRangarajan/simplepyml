@@ -1,5 +1,5 @@
 import numpy as np
-from .loss import BaseLoss
+from simplepyml.util.functions.loss.loss import BaseLoss
 
 
 class SCCE(BaseLoss):
@@ -11,6 +11,8 @@ class SCCE(BaseLoss):
         values: int | float | np.integer | np.floating | list | np.ndarray,
         expected: int | float | np.integer | np.floating | list | np.ndarray,
     ) -> np.ndarray | np.float64:
+        values = np.asarray(values, dtype=np.float64)
+        expected = np.asarray(expected, dtype=np.float64)
         values = np.clip(values, a_min=0.001, a_max=0.999)
         expected = np.clip(expected, a_min=0.001, a_max=0.999)
 
@@ -23,6 +25,8 @@ class SCCE(BaseLoss):
         values: np.ndarray | list,
         expected: np.ndarray | list,
     ) -> np.ndarray:
+        values = np.asarray(values, dtype=np.float64)
+        expected = np.asarray(expected, dtype=np.float64)
         values = np.clip(values, a_min=0.001, a_max=0.999)
         expected = np.clip(expected, a_min=0.001, a_max=0.999)
         return -(
