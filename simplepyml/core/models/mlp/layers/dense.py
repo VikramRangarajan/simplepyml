@@ -1,6 +1,11 @@
 from simplepyml.core.models.mlp.layers.layer import Layer
-import numpy as np
 from typing import Callable
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 # Dense layer

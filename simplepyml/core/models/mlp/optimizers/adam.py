@@ -1,6 +1,11 @@
 from simplepyml.core.models.mlp.optimizers.optimizer import Optimizer
-import numpy as np
 from time import perf_counter
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 class Adam(Optimizer):
@@ -100,8 +105,7 @@ class Adam(Optimizer):
                         learning_rate * m_hat / (np.sqrt(v_hat) + epsilon)
                     )
             adam_t += 1
-        for layer_index in range(len(model.layers) - 1, -1, -1):
-            layer = model.layers[layer_index]
+        for layer in model.layers:
             del layer._ADAM_INIT
             for param in layer.params.keys():
                 delattr(layer, f"_adam_m_{param}")

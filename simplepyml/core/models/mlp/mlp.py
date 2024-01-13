@@ -1,6 +1,11 @@
 # Multi Layer Perceptron Model
-import numpy as np
 from simplepyml.core.models.mlp.layers.layer import Layer
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 # MLP - Multi Level Perceptron Neural Network

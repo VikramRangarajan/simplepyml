@@ -1,5 +1,10 @@
 from simplepyml.util.functions.activation.activation import BaseActivation
-import numpy as np
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 class Sigmoid(BaseActivation):

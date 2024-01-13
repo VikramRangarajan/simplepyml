@@ -1,6 +1,11 @@
 from simplepyml.core.models.mlp.optimizers.optimizer import Optimizer
-import numpy as np
 from time import perf_counter
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 class SGD(Optimizer):

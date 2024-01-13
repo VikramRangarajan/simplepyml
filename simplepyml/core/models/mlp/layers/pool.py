@@ -1,6 +1,11 @@
 from simplepyml.core.models.mlp.layers.layer import Layer
-import numpy as np
 from typing import Callable
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 # Pooling layer
 # TODO: Padding?
@@ -42,19 +47,21 @@ class Pooling(Layer):
 
         # Used to cut off excess, using indexing. arr[this] will give a cut off matrix
         self._cut_matrix_index_tuple = (...,) + tuple(
-            slice(i) for i in self._cut_matrix_shape
+            slice(int(i)) for i in self._cut_matrix_shape
         )
 
         # Index s.t. after higher non-pooling dimensions, you have p1, x1, p2, x2, ..., pn, xn
         # p_i is the i'th partition dimension; You can index along this to look at a certain chunk
         # x_i is the i'th index along that partition dimension
         self._indexed_cut_shape = self.input_shape[: -self.ndim] + tuple(
-            np.dstack((self._partitions, self.pool_shape)).reshape((-1,))
+            int(i)
+            for i in np.dstack((self._partitions, self.pool_shape)).reshape((-1,))
         )
 
         # Parameters for functions such as np.sum, np.mean, np.max, etc. Ex: np.sum(arr, axis=self._oveer_axes)
         self._over_axes = tuple(
-            np.arange(
+            int(i)
+            for i in np.arange(
                 input_array.ndim - self.ndim + 1,
                 2 * (self.ndim - 1) + input_array.ndim,
                 2,
@@ -66,10 +73,11 @@ class Pooling(Layer):
         # Zoom factor along each dimension to upscale an output result to an input result
         # Ex: 5d input matrix with 3d pooling shape (1, 2, 3) will result in (1, 1, 1, 2, 3)
         self._zoom_factor = (1,) * (input_array.ndim - self.ndim) + tuple(
-            self.pool_shape
+            int(i) for i in self.pool_shape
         )
         s_tuples = tuple(
-            f * dim for f, dim in zip(self._zoom_factor, self.output_shape)
+            int(i)
+            for i in [f * dim for f, dim in zip(self._zoom_factor, self.output_shape)]
         )
 
         # Used to index an output result in order to give an upscaled version with the same size as the cut off input result
@@ -83,9 +91,10 @@ class Pooling(Layer):
         # Used to pad zoom result from the cutoff matrix shape to the actual input shape (used in np.pad)
         self._zoom_pad_values = tuple(
             zip(
-                tuple(np.zeros(shape=input_array.ndim, dtype="int32")),
+                tuple(int(i) for i in np.zeros(shape=input_array.ndim, dtype="int32")),
                 tuple(
-                    np.concatenate(
+                    int(i)
+                    for i in np.concatenate(
                         (
                             np.zeros(shape=input_array.ndim - self.ndim, dtype="int32"),
                             (self._pool_axes_shape % self.pool_shape),
