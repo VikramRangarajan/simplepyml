@@ -1,5 +1,10 @@
-import cupy as np
 from simplepyml.util.functions.loss.loss import BaseLoss
+from simplepyml import USE_GPU
+
+if USE_GPU:
+    import cupy as np
+else:
+    import numpy as np
 
 
 class MSE(BaseLoss):

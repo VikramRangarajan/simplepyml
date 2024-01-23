@@ -35,8 +35,10 @@ class Dense(Layer):
         self.dropout = dropout
 
     def _init_layer(self, input_array):
+        if input_array.ndim > 1:
+            raise Exception("Input must be 1-Dimensional for Dense Layer")
         self.initialized = True
-        input_size = input_array.shape[-1]
+        input_size = input_array.size
         self.params["weights"] = np.random.uniform(
             size=(self.size, input_size), low=-1, high=1
         )

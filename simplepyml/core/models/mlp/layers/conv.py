@@ -4,10 +4,10 @@ from simplepyml import USE_GPU
 
 if USE_GPU is True:
     import cupy as np
-    from cupyx.scipy.signal import fftconvolve
+    from cupyx.scipy.signal import fftconvolve, convolve, correlate
 else:
     import numpy as np
-    from scipy.signal import fftconvolve
+    from scipy.signal import fftconvolve, convolve, correlate
 
 
 # N-Dimensional Convolutional layer
@@ -81,17 +81,16 @@ class Conv(Layer):
         )
 
         # Axes to convolve over to calculate input gradient (excludes the num_filters and channels axes)
-        self._backward_input_axes = tuple(range(1, self.params["kernels"].ndim))
+        self._backward_input_axes = tuple(range(2, self.params["kernels"].ndim))
 
     def __call__(self, input_array: np.ndarray) -> np.ndarray:
         if not self.initialized:
             self._init_layer(input_array)
         self.input_array = input_array
         # Increase input dimension by 1 to match kernel shape, so correlation can be broadcasted over axis 0
-        tiled_input = input_array[None]
         self.z = (
             fftconvolve(
-                tiled_input,
+                input_array[None],
                 # Using convolve function, so must flip and conjugate in2 to get a correlation
                 np.flip(self.params["kernels"]).conj(),
                 "valid",
@@ -113,8 +112,9 @@ class Conv(Layer):
         The kernel gradient calculation requires a double nested for loop, looping from [0, num_filters] and [0, num_channnels]
         It performed correlations in an order that would follow a cartesian product:
         (0, 0), (0, 1), ..., (1, 0), (1, 1), ..., (n, 0), (n, 1), ..., (n, n)
-        For loops are avoided by tiliing and reshaping the correlation inputs along axis 0, and then
-        correlating over axis 0. The output of this is then reshaped into the correct shape
+        For loops are avoided by tiliing and repeating the correlation inputs along axis 0, and then
+        correlating over axis 0. The output of this is then reshaped into the correct shape.
+        Still unsure why flip over axis 0 is necessary, but through experimentation, this was the case.
         """
         self.grad["kernels"] = np.flip(
             np.reshape(
@@ -127,22 +127,36 @@ class Conv(Layer):
                     mode="valid",
                     axes=self._backward_kernel_axes,
                 ),
-                (self.num_filters, self.num_channels)
-                + self.params["kernels"].shape[2:],
+                self.params["kernels"].shape,
             ),
             axis=0,
         )
 
-        # Unsure why the result needs to be reversed on axis 0, but from experimentation, it does
-        self.grad["input"] = np.flip(
-            fftconvolve(
-                # Need axis 1 (or num_channels) to be 1 in dLda so it can be broadcasted to kernels
-                dLda[:, None, ...],
-                self.params["kernels"],
-                mode="full",
-                axes=self._backward_input_axes,
-            ),
-            axis=0,
-        ).sum(
-            axis=(0, 1)
-        )  # Sum over num_filters and num_channels axes for chain rule sum
+        self.grad["input"] = fftconvolve(
+            self.params["biases"][None],
+            self.params["kernels"].swapaxes(0, 1),
+            mode="full",
+            axes=self._backward_input_axes
+        ).sum(axis=1)
+
+
+        self.dLdK = np.zeros(shape=self.params["kernels"].shape)
+        self.dLdX = np.zeros(shape=self.input_array.shape)
+        for n in range(self.num_filters):
+            for c in range(self.num_channels):
+                self.dLdK[n][c] = correlate(
+                    self.input_array[c],
+                    self.grad["biases"][n],
+                    mode="valid",
+                    method="fft",
+                )
+                self.dLdX[c] += convolve(
+                    self.params["biases"][n],
+                    self.params["kernels"][n][c],
+                    mode="full",
+                    method="fft",
+                )
+        if self.dLdK.shape != self.grad["kernels"].shape or not np.isclose(self.dLdK, self.grad["kernels"]).all():
+            print("KERNELS UNEQUAL!")
+        if self.dLdX.shape != self.grad["input"].shape or not np.isclose(self.dLdX, self.grad["input"]).all():
+            print("INPUT GRADS UNEQUAL!")

@@ -1,4 +1,5 @@
 from simplepyml.core.models.mlp.layers.layer import Layer
+from typing import Callable
 from simplepyml import USE_GPU
 
 if USE_GPU:
@@ -11,27 +12,23 @@ else:
 class Reshape(Layer):
     def __init__(
         self,
-        output_shape: tuple,
+        activation: Callable[[np.ndarray], np.ndarray],
         *args,
         **kwargs,
     ):
         super().__init__()
-        self.output_shape = output_shape
+        self.activation = activation
         self.grad = dict()
 
     def _init_layer(self, input_array):
         self.initialized = True
-        self.input_shape = input_array.shape
+        self.input_array = input_array
 
     def __call__(self, input_array: np.ndarray) -> np.ndarray:
         if not self.initialized:
             self._init_layer(input_array)
-        return np.reshape(input_array, self.output_shape)
+        return self.activation(input_array)
 
     def back_grad(self, dLda: np.ndarray):
-        self.grad["input"] = np.reshape(dLda, self.input_shape)
+        self.grad["input"] = dLda * self.activation(self.input_array)
 
-
-# Returns a layer that flattens its input
-def Flatten():
-    return Reshape((-1,))
