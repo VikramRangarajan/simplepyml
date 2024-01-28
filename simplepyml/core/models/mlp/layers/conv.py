@@ -4,10 +4,10 @@ from simplepyml import USE_GPU
 
 if USE_GPU is True:
     import cupy as np
-    from cupyx.scipy.signal import fftconvolve, convolve, correlate
+    from cupyx.scipy.signal import fftconvolve
 else:
     import numpy as np
-    from scipy.signal import fftconvolve, convolve, correlate
+    from scipy.signal import fftconvolve
 
 
 # N-Dimensional Convolutional layer
@@ -43,7 +43,7 @@ class Conv(Layer):
     filter_shape: (x', y', z', w', ...). Dims = input_array.ndims - 1
     """
 
-    def _init_layer(self, input_array) -> None:
+    def _init_layer(self, input_array: np.ndarray) -> None:
         self.initialized = True
         self.num_channels = input_array.shape[0]
         self.params["kernels"] = np.random.uniform(
@@ -60,7 +60,7 @@ class Conv(Layer):
             high=-1,
             size=(self.num_filters,)
             + tuple(
-                a - b + 1
+                a - b + 1 # Axis shape for valid correlation/convolution
                 for (a, b) in zip(
                     input_array.shape[1:],
                     self.filter_shape,
@@ -69,16 +69,15 @@ class Conv(Layer):
         )
         self.param_num = self.params["kernels"].size + self.params["biases"].size
 
-        # Axes to convolve over, with relation to input array with new axis to match up with kernel shape (all except axis 0)
+        # Axes to convolve over, with relation to input array with new axis to match up 
+        # with kernel shape (all except axis 0)
         self._forward_axes = tuple(range(1, input_array.ndim + 1))
 
-        # Axes to convolve (all excluding axis 0)
-        self._backward_kernel_axes = tuple(range(1, input_array.ndim))
+        # Axes to convolve (all excluding axis 0, 1 which are filters & channels)
+        self._backward_kernel_axes = tuple(range(2, input_array.ndim + 1))
 
-        # Number of times to tile (num_filters times in axis 0, constant in all other axes)
-        self._backward_kernel_tile_num = (self.num_filters,) + (1,) * (
-            input_array.ndim - 1
-        )
+        # Axes to flip over in order to do a correlation using fftconvolve(), ignoring axis 0 (filters)
+        self._conv_to_corr_flip_axes = tuple(range(1, self.params["biases"].ndim))
 
         # Axes to convolve over to calculate input gradient (excludes the num_filters and channels axes)
         self._backward_input_axes = tuple(range(2, self.params["kernels"].ndim))
@@ -99,64 +98,41 @@ class Conv(Layer):
             + self.params["biases"]
         )
         # Referring to the [:, 0, ...] indexing:
-        # As num_channels (axis 1 of tiled_input and kernels) are equal, the valid convolution will
+        # As num_channels (axis 1 of input_array[None] and kernels) are equal, the valid convolution will
         # result in a size of 1 on axis 1, so we must reduce it by 1 dimension to match the output shape
         return self.activation_func(self.z)
 
-    # TODO: Requires further optimization, and understanding
     def back_grad(self, dLda: np.ndarray) -> None:
         phi_prime_z = self.activation_func.deriv(self.z)
         self.grad["biases"] = np.multiply(dLda, phi_prime_z)
 
         """
-        The kernel gradient calculation requires a double nested for loop, looping from [0, num_filters] and [0, num_channnels]
+        The kernel gradient calculation requires a double nested for loop, looping from 
+        [0, num_filters] and [0, num_channnels]
         It performed correlations in an order that would follow a cartesian product:
-        (0, 0), (0, 1), ..., (1, 0), (1, 1), ..., (n, 0), (n, 1), ..., (n, n)
-        For loops are avoided by tiliing and repeating the correlation inputs along axis 0, and then
-        correlating over axis 0. The output of this is then reshaped into the correct shape.
-        Still unsure why flip over axis 0 is necessary, but through experimentation, this was the case.
-        """
-        self.grad["kernels"] = np.flip(
-            np.reshape(
-                fftconvolve(
-                    np.tile(self.input_array, self._backward_kernel_tile_num),
-                    # Using convolve function, so must flip and conjugate in2 to get a correlation
-                    np.repeat(
-                        np.flip(self.grad["biases"]).conj(), self.num_channels, axis=0
-                    ),
-                    mode="valid",
-                    axes=self._backward_kernel_axes,
-                ),
-                self.params["kernels"].shape,
-            ),
-            axis=0,
-        )
+        (0, 0), (0, 1), ..., (0, m), (1, 0), (1, 1), ..., (1, m), ..., (n, 0), (n, 1), ..., (n, m)
+        For loops are avoided by using broadcasting on axis 0 of self.input_array[None] and axis 1 of:
+        np.flip(self.grad["biases"], axis=self._conv_to_corr_flip_axes).conj()[:, None, ...]
 
+        We must flip and conjugate the second input because we are using fftconvolve() and we
+        need a correlation for this calculation (mimicking scipy behavior)
+        """
+        self.grad["kernels"] = fftconvolve(
+            # Expand axis 0 (1 "filter")
+            self.input_array[None],
+            # Expand axis 1 (1 "channel")
+            np.flip(
+                self.grad["biases"],
+                axis=self._conv_to_corr_flip_axes,
+            ).conj()[:, None, ...],
+            mode="valid",
+            axes=self._backward_kernel_axes,
+        )
         self.grad["input"] = fftconvolve(
-            self.params["biases"][None],
+            # Expand axis 0 (channels, filters, ...)
+            self.grad["biases"][None],
+            # Adjusted index to match with above: (filters, channels, ... -> channels, filters, ...)
             self.params["kernels"].swapaxes(0, 1),
             mode="full",
-            axes=self._backward_input_axes
-        ).sum(axis=1)
-
-
-        self.dLdK = np.zeros(shape=self.params["kernels"].shape)
-        self.dLdX = np.zeros(shape=self.input_array.shape)
-        for n in range(self.num_filters):
-            for c in range(self.num_channels):
-                self.dLdK[n][c] = correlate(
-                    self.input_array[c],
-                    self.grad["biases"][n],
-                    mode="valid",
-                    method="fft",
-                )
-                self.dLdX[c] += convolve(
-                    self.params["biases"][n],
-                    self.params["kernels"][n][c],
-                    mode="full",
-                    method="fft",
-                )
-        if self.dLdK.shape != self.grad["kernels"].shape or not np.isclose(self.dLdK, self.grad["kernels"]).all():
-            print("KERNELS UNEQUAL!")
-        if self.dLdX.shape != self.grad["input"].shape or not np.isclose(self.dLdX, self.grad["input"]).all():
-            print("INPUT GRADS UNEQUAL!")
+            axes=self._backward_input_axes,
+        ).sum(axis=1) # Add over all filters
