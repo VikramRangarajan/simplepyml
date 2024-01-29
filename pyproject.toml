@@ -24,5 +24,7 @@ classifiers = [
 GPU = ["cupy"]
 
 [project.urls]
-Homepage = "https://github.com/VikramRangarajan/simplepyml"
+Homepage = "https://vikramrangarajan.github.io/simplepyml"
 Issues = "https://github.com/VikramRangarajan/simplepyml/issues"
+Documentation = "https://vikramrangarajan.github.io/simplepyml/docs.html"
+Repository = "https://github.com/VikramRangarajan/simplepyml"
