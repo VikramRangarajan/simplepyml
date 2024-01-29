@@ -1,1 +1,1 @@
-furo==2021.11.16
+pydata-sphinx-theme==v0.15.2
