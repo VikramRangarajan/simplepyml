@@ -1,7 +1,0 @@
-simplepyml.core.models.mlp.optimizers.sgd module
-================================================
-
-.. automodule:: simplepyml.core.models.mlp.optimizers.sgd
-   :members:
-   :undoc-members:
-   :show-inheritance:

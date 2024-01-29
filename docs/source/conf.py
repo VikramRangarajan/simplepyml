@@ -1,5 +1,7 @@
+import importlib
 import os
 import sys
+import inspect
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -21,12 +23,41 @@ release = "0.0.1"
 
 extensions = [
     "sphinx.ext.autodoc",
-    'sphinx.ext.viewcode',
+    'sphinx.ext.linkcode',
     'sphinx.ext.napoleon'
 ]
+code_url = "https://github.com/VikramRangarajan/simplepyml/tree/main"
+
+def linkcode_resolve(domain, info):
+    if domain != 'py' or not info['module']:
+        return None
+
+    mod = importlib.import_module(info["module"])
+    if "." in info["fullname"]:
+        objname, attrname = info["fullname"].split(".")
+        obj = getattr(mod, objname)
+        try:
+            # object is a method of a class
+            obj = getattr(obj, attrname)
+        except AttributeError:
+            # object is an attribute of a class
+            return None
+    else:
+        obj = getattr(mod, info["fullname"])
+
+    try:
+        file = inspect.getsourcefile(obj)
+        lines = inspect.getsourcelines(obj)
+    except TypeError:
+        # e.g. object is a typing.Union
+        return None
+    file = os.path.relpath(file, os.path.abspath("."))
+    start, end = lines[1], lines[1] + len(lines[0]) - 1
+
+    return f"{code_url}/{file}#L{start}-L{end}"
 
 templates_path = ["_templates"]
-exclude_patterns = []
+exclude_patterns = ["_static"]
 
 
 # -- Options for HTML output -------------------------------------------------
