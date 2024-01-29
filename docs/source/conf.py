@@ -42,4 +42,4 @@ html_theme_options = {
     },
     "navigation_depth": -1,
 }
-html_static_path = ["_static"]
+html_static_path = []
