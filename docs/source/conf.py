@@ -74,3 +74,7 @@ html_theme_options = {
     "navigation_depth": -1,
 }
 html_static_path = []
+
+autodoc_default_options = {
+    'special-members': '__call__',
+}
