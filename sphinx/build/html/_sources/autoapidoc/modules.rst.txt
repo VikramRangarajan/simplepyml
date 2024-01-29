@@ -1,0 +1,7 @@
+simplepyml
+==========
+
+.. toctree::
+   :maxdepth: 10
+
+   simplepyml
