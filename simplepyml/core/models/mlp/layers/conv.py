@@ -13,6 +13,81 @@ else:
 # N-Dimensional Convolutional layer
 # TODO: Padding?
 class Conv(Layer):
+    r"""
+    Convolutional Layer.
+
+    Definition:
+
+    Takes an input, validly correlates it with a kernel matrix, adds a bias, and sends this result
+    (z) through the activation function:
+
+    .. math::
+        z[i] &= X \underset{valid}{\star} K[i] + b[i] \text{, for each filter } i
+
+        Y &= \phi(z)
+
+    Expected input array shape: (# Channels, x, y, z, w, ...)
+
+    Filter shape: (x', y', z', w', ...) where each i' <= i
+
+    Kernel shape: (# Filters, # Channels, x', y', z', w', ...)
+
+    Output & Bias shape: (# Filters, x-x'+1, y-y'+1, z-z'+1, w-w'+1, ...) (due to valid correlation)
+
+    The x, y, z, w, ... are the axes of correlation, and determines the dimension of this layer
+    (1d convolutional layer vs. 2d, 3d, 4d, etc.)
+
+    Note: Higher dimensions have not yet been tested.
+
+    To calculate the loss gradient w.r.t. the biases, weights, and input, we use these formulas:
+
+    .. math::
+        \frac{\partial L}{\partial b} &= \frac{\partial L}{\partial Y} \odot \phi'(z)
+
+        \frac{\partial L}{\partial K_{i,c,:,:}} &= X_{c,:,:} \underset{valid}{\star} \frac{\partial L}{\partial b_{i,:,:}}
+
+        \frac{\partial L}{\partial X_{c,:,:}} &= \sum_{i=0}^{\text{num_filters - 1}} \frac{\partial L}{\partial b_{i,:,:}} \underset{full}{\ast} K_{i,c,:,:}
+
+    My derivation of these formulas is here: :download:`pdf <../pdfs/convlayer_proof.pdf>`
+
+    Parameters:
+    -----------
+    activation : function
+        Activation function. See :py:mod:`~simplepyml.util.functions.activation` functions
+    num_filters : int
+        Number of filters, length of axis 0 of output
+    filter_shape : tuple
+        Shape of the kernel filter. Determines the axes of correlation.
+    dropout : float
+        Currently useless, future plans to implement dropout.
+
+    Attributes:
+    -----------
+    input_array : ndarray
+        Most recent input of layer
+    z : ndarray
+        Output of layer before put through activation function
+    num_channels : int
+        Number of filters, length of axis 0 of input and axis 1 of kernels array
+    num_filters : int
+        Number of filters, length of axis 0 of output
+    dropout : float
+        Currently useless.
+    params : dict()
+        Contains kernel and bias arrays
+    grad : dict()
+        Empty dictionary, until :py:func:`~back_grad` is called, after which:
+
+        - grad["input"] is the loss gradient w.r.t. the input
+        - grad["kernels"] is the loss gradient w.r.t. the kernels
+        - grad["biases"] is the loss gradient w.r.t. the biases
+    param_num : int
+        Number of parameters in this layer (params["kernels"].size + params["biases"].size)
+    initialized : bool
+        Whether the layer has been initialized. False until called for the
+        first time
+    """
+
     def __init__(
         self,
         activation: Callable[[np.ndarray], np.ndarray],
@@ -38,11 +113,6 @@ class Conv(Layer):
         # TODO: Dropout
         self.dropout = dropout
 
-    """
-    input_array shape: (# channels (RGB, etc.), x, y, z, w, ...)
-    filter_shape: (x', y', z', w', ...). Dims = input_array.ndims - 1
-    """
-
     def _init_layer(self, input_array: np.ndarray) -> None:
         self.initialized = True
         self.num_channels = input_array.shape[0]
@@ -60,7 +130,7 @@ class Conv(Layer):
             high=-1,
             size=(self.num_filters,)
             + tuple(
-                a - b + 1 # Axis shape for valid correlation/convolution
+                a - b + 1  # Axis shape for valid correlation/convolution
                 for (a, b) in zip(
                     input_array.shape[1:],
                     self.filter_shape,
@@ -69,7 +139,7 @@ class Conv(Layer):
         )
         self.param_num = self.params["kernels"].size + self.params["biases"].size
 
-        # Axes to convolve over, with relation to input array with new axis to match up 
+        # Axes to convolve over, with relation to input array with new axis to match up
         # with kernel shape (all except axis 0)
         self._forward_axes = tuple(range(1, input_array.ndim + 1))
 
@@ -103,6 +173,21 @@ class Conv(Layer):
         return self.activation_func(self.z)
 
     def back_grad(self, dLda: np.ndarray) -> None:
+        """
+        Backward gradient calculation. Given loss gradient w.r.t. the most
+        recent output, calculate and store the loss gradient w.r.t. the most
+        recent input, kernels, and biases and stores in the grad dictionary.
+
+        Parameters
+        ----------
+        dLda : ndarray
+            The loss gradient w.r.t. the most recent output. Must have shape
+            equal to the output shape
+
+        Returns
+        -------
+        None
+        """
         phi_prime_z = self.activation_func.deriv(self.z)
         self.grad["biases"] = np.multiply(dLda, phi_prime_z)
 
@@ -135,4 +220,4 @@ class Conv(Layer):
             self.params["kernels"].swapaxes(0, 1),
             mode="full",
             axes=self._backward_input_axes,
-        ).sum(axis=1) # Add over all filters
+        ).sum(axis=1)  # Add over all filters

@@ -20,6 +20,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+[project.optional-dependencies]
+GPU = ["cupy"]
+
 [project.urls]
 Homepage = "https://github.com/VikramRangarajan/simplepyml"
 Issues = "https://github.com/VikramRangarajan/simplepyml/issues"

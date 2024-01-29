@@ -9,19 +9,61 @@ else:
 
 # Pooling layer
 # TODO: Padding?
-"""
-pool_shape is the shape of each chunk
-The length of pool_shape determines the dimension of this pooling layer
-
-Ex: (2, 3) => 2D Pooling Layer, and the pool_function will be run on a 2d subset of the input matrix
-    (3, 3, 1, 4) => 4D Pooling Layer, function will be run on 4d subset of input matrix
-
-The pool_function is recommended to be a numpy aggregate function, such as np.mean, np.max, np.sum, np.std, etc.
-It must have an axis parameter which causes it to evaluate itself along specific numpy ndarray axes
-"""
 
 
 class Pooling(Layer):
+    r"""
+    N-Dimensional Pooling Layer.
+
+    The pool_function is recommended to be a numpy aggregate function, such as np.mean, np.max, np.sum, np.std, etc.
+    It must have an axis parameter which causes it to evaluate itself along specific numpy ndarray axes
+
+    Parameters:
+    -----------
+    pool_shape : tuple
+        The shape of each pooling chunk. The length of pool_shape determines
+        the dimension of this pooling layer.
+
+        Ex: (4, 4) input and (3, 3) pool_shape will result in a (1, 1) output
+        (one row and column is cut off since 4 % 3 == 1).
+
+        Ex: (9, 9) input and (2, 2) pool_shape will result in a (4, 4) output
+        (one row and column is cut off since 9 % 2 == 1)
+
+        Ex: (2, 3) => 2D Pooling Layer, and the pool_function will be run on
+        a 2d subset of the input matrix
+
+        Ex: (3, 3, 1, 4) => 4D Pooling Layer, function will be run on 4d subset
+        of input matrix
+    pool_function : function {np.sum, np.mean, np.max; or cupy equivalents}
+        Determines what kind of pooling layer this is (Max Pooling, Avg Pooling, Sum Pooling)
+
+    Attributes:
+    -----------
+    input_array : ndarray
+        Most recent input of layer
+    input_shape : tuple
+        Shape of input array
+    pool_shape : tuple
+        pool shape, defined in constructor
+    ndim : int
+        Dimension of this pooling layer, equivalent to len(pool_shape)
+    pool_function : function {np.sum, np.mean, np.max; or cupy equivalents}
+        The pooling function
+    pooling_size : int
+        The product of every element in pool_shape. Used in backpropagation.
+    params : dict()
+        Empty dictionary; Pooling layer does not have trainable parameters
+    grad : dict()
+        Empty dictionary, until :py:func:`~back_grad` is called, after which
+        grad["input"] is the loss gradient w.r.t. the input
+    param_num : int (0)
+        Number of parameters in this layer (0)
+    initialized : bool
+        Whether the layer has been initialized. False until called for the
+        first time
+    """
+
     def __init__(
         self,
         pool_shape,
@@ -113,11 +155,45 @@ class Pooling(Layer):
         return self.pool_function(mat, axis=self._over_axes, dtype=np.float64)
 
     def zoom(self, arr):
+        """
+        Zoom out an array
+
+        Parameters
+        ----------
+        arr : ndarray
+            The array to be zoomed out. arr.shape must be equal to the output shape.
+
+        Returns
+        -------
+        ndarray
+            Zoomed out array with shape equal to trimmed input shape
+
+        """
         return np.pad(
             arr[self._zoom_view], self._zoom_pad_values, "constant", constant_values=0
         )
 
     def back_grad(self, dLda: np.ndarray):
+        """
+        Backward gradient calculation. Given loss gradient w.r.t. the most
+        recent output, calculate and store the loss gradient w.r.t. the most
+        recent input, and store in grad["input"].
+
+        Parameters
+        ----------
+        dLda : ndarray
+            The loss gradient w.r.t. the most recent output. Must have shape
+            equal to the output shape
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        NotImplementedException
+            If the pool_function is not np.max, np.sum, np.avg, or cupy equivalents
+        """
         self.grad["input"] = self.zoom(dLda)
         if self.pool_function == np.max:
             self.grad["input"][self.grad["input"] != self.input_array] = 0
