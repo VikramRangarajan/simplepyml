@@ -19,20 +19,22 @@ class Dense(Layer):
     (z) through the activation function:
 
     .. math::
-        Y = \phi(W \odot X + b)
+        \vec{z} &= W \cdot \vec{X} + \vec{b}
+
+        \vec{Y} &= \phi(\vec{z})
 
     To calculate the loss gradient w.r.t. the biases, weights, and input, we use these formulas:
 
     .. math::
-        \vec{\frac{\partial L}{\partial b}} &= \vec{\frac{\partial L}{\partial a}} \odot \phi'(\vec z)
+        \vec{\frac{\partial L}{\partial \vec b}} &= \vec{\frac{\partial L}{\partial \vec Y}} \odot \phi'(\vec z)
 
-        \vec{\frac{\partial L}{\partial W}} &= \vec{\frac{\partial L}{\partial b}} \cdot X^T
+        \vec{\frac{\partial L}{\partial W}} &= \vec{\frac{\partial L}{\partial b}} \cdot \vec{X}^T
 
-        \vec{\frac{\partial L}{\partial X}} &= W^T \cdot \vec{\frac{\partial L}{\partial b}}
+        \vec{\frac{\partial L}{\partial \vec X}} &= W^T \cdot \vec{\frac{\partial L}{\partial \vec b}}
 
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     size : int
         Output size.
     activation : function
@@ -40,8 +42,8 @@ class Dense(Layer):
     dropout : float
         Currently useless, future plans to implement dropout.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     input_array : ndarray
         Most recent input of layer
     z : ndarray

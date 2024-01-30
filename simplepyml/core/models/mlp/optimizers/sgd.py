@@ -9,6 +9,16 @@ else:
 
 
 class SGD(Optimizer):
+    r"""
+    Stoichastic Gradient Descent (SGD) Optimizer.
+
+    Updates parameter using the rule:
+
+    .. math::
+        w = w - \frac{\partial L}{\partial w} \alpha
+
+    """
+
     def __init__(self):
         ...
 
@@ -20,6 +30,29 @@ class SGD(Optimizer):
         epochs,
         learning_rate=0.01,
     ):
+        r"""
+        Runs training loop.
+
+        Parameters
+        ----------
+        model : :py:class:`simplepyml.core.models.mlp.mlp.MLP`
+            The MLP model whose parameters will be updated
+            using SGD
+        input_data : ndarray
+            This input data has shape (# inputs, ...). Axis
+            0 of this array will be iterated over to get every
+            single input to the network. **This should be training
+            data**.
+        output_data : ndarray
+            This output data has shape (# inputs, ...) where ... is
+            related to the output shape of the network. A dynamic way
+            of if an input results in a correct output is a TODO.
+        epochs : int
+            The number of epochs to run
+        learning_rate : float (default 0.01)
+            The learning rate (stepsize / :math:`\alpha` ) in the SGD
+            algorithm
+        """
         avg = 0
 
         for epoch in range(epochs):
@@ -42,6 +75,33 @@ class SGD(Optimizer):
         model,
         learning_rate,
     ) -> tuple[float, float]:
+        r"""
+        Runs one epoch.
+
+        Parameters
+        ----------
+        input_data : ndarray
+            This input data has shape (# inputs, ...). Axis
+            0 of this array will be iterated over to get every
+            single input to the network. **This should be training
+            data**.
+        output_data : ndarray
+            This output data has shape (# inputs, ...) where ... is
+            related to the output shape of the network. A dynamic way
+            of if an input results in a correct output is a TODO.
+        model : :py:class:`simplepyml.core.models.mlp.mlp.MLP`
+            The MLP model whose parameters will be updated
+            using SGD
+        learning_rate : float (default 0.01)
+            The learning rate (stepsize / :math:`\alpha` ) in the SGD
+            algorithm
+
+        Returns
+        -------
+        tuple[float, float]
+            Returns loss during the epoch, and the accuracy gained
+            during that epoch (not entirely accurate)
+        """
         curr_loss = 0
         accuracy = 0
         for index in range(len(input_data)):

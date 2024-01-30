@@ -23,8 +23,9 @@ release = "0.0.1"
 
 extensions = [
     "sphinx.ext.autodoc",
-    'sphinx.ext.linkcode',
-    'sphinx.ext.napoleon'
+    "sphinx.ext.linkcode",
+    "numpydoc",
+    "sphinx.ext.autosummary",
 ]
 code_url = "https://github.com/VikramRangarajan/simplepyml/tree/main"
 
@@ -78,3 +79,6 @@ html_static_path = []
 autodoc_default_options = {
     'special-members': '__call__',
 }
+numpydoc_show_class_members = False
+autosummary_generate = True
+autosummary_imported_members = True

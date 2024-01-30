@@ -9,6 +9,15 @@ else:
 
 
 class Adam(Optimizer):
+    r"""
+    The `Adam Optimizer`_ updates network parameters using the concept
+    of velocity and momentum. It has proven to be a consistent and
+    very fast (in terms of convergence) optimizer.
+
+    .. _Adam Optimizer: https://doi.org/10.48550/arXiv.1412.6980
+
+    """
+
     def __init__(self):
         ...
 
@@ -23,6 +32,41 @@ class Adam(Optimizer):
         beta_2=0.999,
         epsilon=1e-8,
     ) -> None:
+        r"""
+        Calling the Adam optimizer to run
+
+        Parameters
+        ----------
+        model : :py:class:`simplepyml.core.models.mlp.mlp.MLP`
+            The MLP model whose parameters will be updated
+            using Adam
+        input_data : ndarray
+            This input data has shape (# inputs, ...). Axis
+            0 of this array will be iterated over to get every
+            single input to the network. **This should be training
+            data**.
+        output_data : ndarray
+            This output data has shape (# inputs, ...) where ... is
+            related to the output shape of the network. A dynamic way
+            of if an input results in a correct output is a TODO.
+        epochs : int
+            The number of epochs to run
+        learning_rate : float (default 0.001)
+            The learning rate (stepsize / :math:`\alpha` ) in the Adam
+            algorithm
+        beta_1 : float (default 0.9)
+            The exponential decay rate for first moment estimate
+            (:math:`\beta_{1}`) in the Adam algorithm
+        beta_2 : float (default 0.999)
+            The exponential decay rate for second moment estimate
+            (:math:`\beta_2`) in the Adam algorithm
+        epsilon : float (default 1e-8)
+            Small number, :math:`\epsilon > 0`
+
+        Returns
+        -------
+        None
+        """
         avg = 0
 
         for epoch in range(epochs):
@@ -48,6 +92,43 @@ class Adam(Optimizer):
         learning_rate=0.001,
         epsilon=1e-8,
     ) -> tuple[float, float]:
+        r"""
+        Runs one epoch
+
+        Parameters
+        ----------
+        model : :py:class:`simplepyml.core.models.mlp.mlp.MLP`
+            The MLP model whose parameters will be updated
+            using Adam
+        input_data : ndarray
+            This input data has shape (# inputs, ...). Axis
+            0 of this array will be iterated over to get every
+            single input to the network. **This should be training
+            data**.
+        output_data : ndarray
+            This output data has shape (# inputs, ...) where ... is
+            related to the output shape of the network. A dynamic way
+            of if an input results in a correct output is a TODO.
+        epochs : int
+            The number of epochs to run
+        learning_rate : float (default 0.001)
+            The learning rate (stepsize / :math:`\alpha` ) in the Adam
+            algorithm
+        beta_1 : float (default 0.9)
+            The exponential decay rate for first moment estimate
+            (:math:`\beta_{1}`) in the Adam algorithm
+        beta_2 : float (default 0.999)
+            The exponential decay rate for second moment estimate
+            (:math:`\beta_2`) in the Adam algorithm
+        epsilon : float (default 1e-8)
+            Small number, :math:`\epsilon > 0`
+
+        Returns
+        -------
+        tuple[float, float]
+            Returns loss during the epoch, and the accuracy gained
+            during that epoch (not entirely accurate)
+        """
         curr_loss = 0
         accuracy = 0
         adam_t = 1

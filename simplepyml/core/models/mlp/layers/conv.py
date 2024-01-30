@@ -22,7 +22,7 @@ class Conv(Layer):
     (z) through the activation function:
 
     .. math::
-        z[i] &= X \underset{valid}{\star} K[i] + b[i] \text{, for each filter } i
+        z_{i,...} &= X \underset{valid}{\star} K_{i,...} + b_{i,...} \text{, for each filter } i
 
         Y &= \phi(z)
 
@@ -44,14 +44,14 @@ class Conv(Layer):
     .. math::
         \frac{\partial L}{\partial b} &= \frac{\partial L}{\partial Y} \odot \phi'(z)
 
-        \frac{\partial L}{\partial K_{i,c,:,:}} &= X_{c,:,:} \underset{valid}{\star} \frac{\partial L}{\partial b_{i,:,:}}
+        \frac{\partial L}{\partial K_{i,c,...}} &= X_{c,...} \underset{valid}{\star} \frac{\partial L}{\partial b_{i,...}}
 
-        \frac{\partial L}{\partial X_{c,:,:}} &= \sum_{i=0}^{\text{num_filters - 1}} \frac{\partial L}{\partial b_{i,:,:}} \underset{full}{\ast} K_{i,c,:,:}
+        \frac{\partial L}{\partial X_{c,...}} &= \sum_{i=0}^{\text{num_filters - 1}} \frac{\partial L}{\partial b_{i,...}} \underset{full}{\ast} K_{i,c,...}
 
     My derivation of these formulas is here: :download:`pdf <../pdfs/convlayer_proof.pdf>`
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     activation : function
         Activation function. See :py:mod:`~simplepyml.util.functions.activation` functions
     num_filters : int
@@ -61,8 +61,8 @@ class Conv(Layer):
     dropout : float
         Currently useless, future plans to implement dropout.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     input_array : ndarray
         Most recent input of layer
     z : ndarray

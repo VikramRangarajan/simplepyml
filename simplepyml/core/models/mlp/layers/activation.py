@@ -26,13 +26,13 @@ class Activation(Layer):
         \frac{\partial L}{\partial X} = \frac{\partial L}{\partial Y} \odot \phi'(z)
 
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     activation : function
         Activation function. See :py:mod:`~simplepyml.util.functions.activation` functions
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     input_array : ndarray
         Most recent input of layer
     params : dict()

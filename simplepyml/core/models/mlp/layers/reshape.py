@@ -9,8 +9,7 @@ else:
 
 # Reshape layer
 class Reshape(Layer):
-    r"""
-    Reshape Layer.
+    r"""Reshape Layer.
 
     Definition:
 
@@ -19,14 +18,15 @@ class Reshape(Layer):
     To calculate the loss gradient w.r.t. the input, we just reshape the output
     shape into the input shape.
 
-    Parameters:
-    -----------
+
+    Parameters
+    ----------
     output_shape : tuple
         The desired output shape. The size of the output array must be the same
         as the input array
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     params : dict()
         Empty dictionary, no parameters in this layer
     grad : dict()
@@ -39,6 +39,7 @@ class Reshape(Layer):
         Whether the layer has been initialized. False until called for the
         first time
     """
+
     def __init__(
         self,
         output_shape: tuple,
@@ -80,11 +81,12 @@ class Reshape(Layer):
 # Returns a layer that flattens its input
 def Flatten():
     """
-    Gives you a :py:class:`~Reshape` object which reshapes a given input
+    Gives you a :py:class:`Reshape` object which reshapes a given input
     to a 1d array
 
     Returns
     -------
-    None
+    :py:class:`Reshape`
+        Flattening Reshape layer
     """
     return Reshape((-1,))

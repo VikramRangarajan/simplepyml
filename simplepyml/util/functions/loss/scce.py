@@ -8,6 +8,11 @@ else:
 
 
 class SCCE(BaseLoss):
+    """
+    Categorical Cross Entropy Class (CCE). Sparse by default,
+    need to add non-sparse in the future.
+    """
+
     def __init__(self):
         ...
 
@@ -16,6 +21,21 @@ class SCCE(BaseLoss):
         values: int | float | np.integer | np.floating | list | np.ndarray,
         expected: int | float | np.integer | np.floating | list | np.ndarray,
     ) -> np.ndarray | np.float64:
+        """
+        Returns the CCE result of the expected and output values.
+
+        Parameters
+        ----------
+        values : int | float | np.integer | np.floating | list | np.ndarray
+            output values
+        expected : int | float | np.integer | np.floating | list | np.ndarray
+            expected or correct values
+
+        Returns
+        -------
+        np.ndarray | np.float64
+            CCE result
+        """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
         values = np.clip(values, a_min=0.001, a_max=0.999)

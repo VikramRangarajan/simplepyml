@@ -1,4 +1,8 @@
 class BaseLoss:
+    """
+    Base Loss Class.
+    """
+
     def __init__(self):
         raise Exception("Do not use this class")
 

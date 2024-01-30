@@ -5,8 +5,10 @@ class Layer:
     r"""
     Base Layer.
 
-    Attributes:
-    -----------
+    ...
+
+    Attributes
+    ----------
     params : dict()
         Empty dictionary; Base layer does not have trainable parameters
     param_num : int (0)

@@ -1,13 +1,20 @@
 class BaseActivation:
+    """
+    Base Activation Class.
+
+    """
+
     def __init__(self):
         raise Exception("Do not use this class")
-    
+
     def __call__(self, *args, **kwargs):
         ...
-    
+
     def deriv(self, *args, **kwargs):
         ...
-'''
+
+
+"""
 TODO: String to correct activation func
 def activation_function_from_str(x: str):
     x = x.lower().strip()
@@ -29,4 +36,4 @@ def get_instance(loss_obj):
             return new_obj
         else:
             raise ValueError("Invalid Activation Function Object")
-'''
+"""

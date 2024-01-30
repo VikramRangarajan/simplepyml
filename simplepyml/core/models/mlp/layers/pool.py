@@ -18,8 +18,8 @@ class Pooling(Layer):
     The pool_function is recommended to be a numpy aggregate function, such as np.mean, np.max, np.sum, np.std, etc.
     It must have an axis parameter which causes it to evaluate itself along specific numpy ndarray axes
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     pool_shape : tuple
         The shape of each pooling chunk. The length of pool_shape determines
         the dimension of this pooling layer.
@@ -38,8 +38,8 @@ class Pooling(Layer):
     pool_function : function {np.sum, np.mean, np.max; or cupy equivalents}
         Determines what kind of pooling layer this is (Max Pooling, Avg Pooling, Sum Pooling)
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     input_array : ndarray
         Most recent input of layer
     input_shape : tuple
