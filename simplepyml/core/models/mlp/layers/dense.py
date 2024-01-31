@@ -69,14 +69,12 @@ class Dense(Layer):
         self,
         size: int | np.integer,
         activation: Callable[[np.ndarray], np.ndarray],
-        dropout: float | np.floating = 0.0,
+        dropout: float | None = None,
         *args,
         **kwargs,
     ):
         super().__init__()
         size = int(size)
-        # TODO: dropout
-        dropout = float(dropout)
 
         if size < 1:
             raise ValueError("Size of dense layer must be >= 1")
@@ -103,7 +101,18 @@ class Dense(Layer):
     def __call__(self, input_array: np.ndarray):
         if not self.initialized:
             self._init_layer(input_array)
+        if self.dropout is not None:
+            # r will contain 0's and 1's, with approximately self.dropout % of 0's
+            self.r = np.random.binomial(
+                1.0,
+                1 - self.dropout,
+                input_array.shape,
+            ).astype(np.float64)
+
+            input_array *= self.r
+
         self.input_array = input_array
+
         self.z = self.params["weights"] @ input_array + self.params["biases"]
         return self.activation_func(self.z)
 
@@ -129,3 +138,5 @@ class Dense(Layer):
         self.grad["weights"] = np.reshape(self.grad["biases"], (-1, 1)) @ np.reshape(
             self.input_array, (1, -1)
         )
+        if self.dropout is not None:
+            self.grad["input"] *= self.r

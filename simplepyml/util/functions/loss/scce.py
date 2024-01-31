@@ -51,7 +51,7 @@ class SCCE(BaseLoss):
         """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
-        return -np.sum(expected * np.emath.logn(log_base, values))
+        return -np.sum(expected * np.log2(log_base, values) / np.log2(log_base))
 
     def deriv(
         self,
@@ -76,7 +76,7 @@ class SCCE(BaseLoss):
         -------
         ndarray
             Gradient array w.r.t. input
-        """        
+        """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
         return (-1.0 / np.log(log_base)) * (expected / (values))

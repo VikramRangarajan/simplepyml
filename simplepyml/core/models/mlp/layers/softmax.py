@@ -30,11 +30,13 @@ class Softmax(Layer):
 
     def __init__(
         self,
+        dropout: float | None = None,
         *args,
         **kwargs,
     ):
         super().__init__()
         self.grad = dict()
+        self.dropout = dropout
 
     def __call__(self, input_array: np.ndarray) -> np.ndarray:
         """
@@ -50,6 +52,15 @@ class Softmax(Layer):
         np.ndarray
             Output array, same shape as input
         """
+        if self.dropout is not None:
+            # r will contain 0's and 1's, with approximately self.dropout % of 0's
+            self.r = np.random.binomial(
+                1.0,
+                1 - self.dropout,
+                input_array.shape,
+            ).astype(np.float64)
+
+            input_array *= self.r
         tmp = np.exp(input_array)
         self.Y = tmp / tmp.sum()
         return self.Y
@@ -66,3 +77,5 @@ class Softmax(Layer):
         """
         g = dLda * self.Y
         self.grad["input"] = -np.sum(g) * self.Y + g
+        if self.dropout is not None:
+            self.grad["input"] *= self.r

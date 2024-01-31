@@ -68,6 +68,7 @@ class Pooling(Layer):
         self,
         pool_shape,
         pool_function: Callable[[np.ndarray], np.number],
+        dropout: float | None = None,
         *args,
         **kwargs,
     ):
@@ -76,6 +77,7 @@ class Pooling(Layer):
         self.ndim = len(pool_shape)
         self.pool_function = pool_function
         self.grad = dict()
+        self.dropout = dropout
 
     def _init_layer(self, input_array):
         self.initialized = True
@@ -150,6 +152,15 @@ class Pooling(Layer):
     def __call__(self, input_array: np.ndarray):
         if not self.initialized:
             self._init_layer(input_array)
+        if self.dropout is not None:
+            # r will contain 0's and 1's, with approximately self.dropout % of 0's
+            self.r = np.random.binomial(
+                1.0,
+                1 - self.dropout,
+                input_array.shape,
+            ).astype(np.float64)
+
+            input_array *= self.r
         self.input_array = input_array
         mat = input_array[self._cut_matrix_index_tuple].reshape(self._indexed_cut_shape)
         return self.pool_function(mat, axis=self._over_axes).astype(np.float64)
@@ -200,6 +211,8 @@ class Pooling(Layer):
         elif self.pool_function == np.mean:
             self.grad["input"] /= self.pooling_size
         elif self.pool_function == np.sum:
-            return
+            pass
         else:
             raise NotImplementedError("Gradient for this function is not implemented")
+        if self.dropout is not None:
+            self.grad["input"] *= self.r

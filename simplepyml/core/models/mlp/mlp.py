@@ -118,6 +118,6 @@ class MLP:
         ----------
         filename : str
             File descriptor or path for the pickle file
-        """        
+        """
         with open(filename, "wb") as f:
             pickle.dump(self, f)

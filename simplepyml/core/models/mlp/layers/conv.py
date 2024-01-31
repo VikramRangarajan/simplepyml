@@ -93,13 +93,12 @@ class Conv(Layer):
         activation: Callable[[np.ndarray], np.ndarray],
         num_filters: int | np.integer,
         filter_shape: tuple,
-        dropout: float | np.floating = 0.0,
+        dropout: float | None = None,
         *args,
         **kwargs,
     ):
         super().__init__()
         num_filters = int(num_filters)
-        dropout = float(dropout)
 
         if num_filters < 1:
             raise TypeError("Number of filters for Conv layer must be > 0")
@@ -110,7 +109,6 @@ class Conv(Layer):
 
         self.grad = dict()
 
-        # TODO: Dropout
         self.dropout = dropout
 
     def _init_layer(self, input_array: np.ndarray) -> None:
@@ -155,6 +153,15 @@ class Conv(Layer):
     def __call__(self, input_array: np.ndarray) -> np.ndarray:
         if not self.initialized:
             self._init_layer(input_array)
+        if self.dropout is not None:
+            # r will contain 0's and 1's, with approximately self.dropout % of 0's
+            self.r = np.random.binomial(
+                1.0,
+                1 - self.dropout,
+                input_array.shape,
+            ).astype(np.float64)
+
+            input_array *= self.r
         self.input_array = input_array
         # Increase input dimension by 1 to match kernel shape, so correlation can be broadcasted over axis 0
         self.z = (
@@ -221,3 +228,5 @@ class Conv(Layer):
             mode="full",
             axes=self._backward_input_axes,
         ).sum(axis=1)  # Add over all filters
+        if self.dropout is not None:
+            self.grad["input"] *= self.r

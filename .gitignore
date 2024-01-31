@@ -9,3 +9,4 @@ docs/Makefile
 docs/source/generated
 build
 *.egg-info
+dist
