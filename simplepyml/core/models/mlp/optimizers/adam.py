@@ -1,6 +1,6 @@
 from simplepyml.core.models.mlp.optimizers.optimizer import Optimizer
-from time import perf_counter
 from simplepyml import USE_GPU
+from tqdm import tqdm
 
 if USE_GPU:
     import cupy as np
@@ -70,13 +70,12 @@ class Adam(Optimizer):
         avg = 0
 
         for epoch in range(epochs):
-            start_time = perf_counter()
-            curr_loss, accuracy = self.run_epoch(
+            curr_loss, accuracy, tdiff = self.run_epoch(
                 input_data, output_data, model, beta_1, beta_2, learning_rate, epsilon
             )
             curr_loss /= len(input_data)
             accuracy /= len(output_data)
-            tdiff = Adam.print_epoch(epoch, epochs, accuracy, curr_loss, start_time)
+            print(f"Epoch {epoch + 1} of {epochs} done, took ~{tdiff} seconds")
             avg += tdiff
         avg /= epochs
         print()
@@ -132,19 +131,18 @@ class Adam(Optimizer):
         curr_loss = 0
         accuracy = 0
         adam_t = 1
-        for index in range(len(input_data)):
+        bar = tqdm(range(len(input_data)), miniters=len(input_data) // 100, colour="green")
+        for index in bar:
             output = output_data[index]
             output_result = model.evaluate(input=input_data[index])
             curr_loss += model.loss(values=output_result, expected=output)
-
             # Evaluates whether the evaluation is correct, to calculate accuracy
             # TODO: Implement accuracy function, maybe in loss objects
             if output_result.argmax() == output.argmax():
                 accuracy += 1
 
-            # This print is very inefficient
-            if len(input_data) > 5000 and (index + 1) % (len(input_data) // 100) == 0:
-                Adam.print_progress(index, len(input_data), accuracy, curr_loss)
+            if (index) % int(len(input_data) / 100) == 0:
+                bar.set_postfix({"accuracy": accuracy / (index + 1), "loss": curr_loss / (index + 1)}, refresh=True)
 
             dLda_next = (model.loss.deriv)(output_result, output)
             # Iterate backwards, excluding last layer since we calculated dLda for that already
@@ -191,4 +189,4 @@ class Adam(Optimizer):
             for param in layer.params.keys():
                 delattr(layer, f"_adam_m_{param}")
                 delattr(layer, f"_adam_v_{param}")
-        return curr_loss, accuracy
+        return curr_loss, accuracy, bar.format_dict["elapsed"]

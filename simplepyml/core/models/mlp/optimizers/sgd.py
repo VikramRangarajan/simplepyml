@@ -1,6 +1,6 @@
 from simplepyml.core.models.mlp.optimizers.optimizer import Optimizer
-from time import perf_counter
 from simplepyml import USE_GPU
+from tqdm import tqdm
 
 if USE_GPU:
     import cupy as np
@@ -56,13 +56,12 @@ class SGD(Optimizer):
         avg = 0
 
         for epoch in range(epochs):
-            start_time = perf_counter()
-            curr_loss, accuracy = self.run_epoch(
+            curr_loss, accuracy, tdiff = self.run_epoch(
                 input_data, output_data, model, learning_rate
             )
             curr_loss /= len(input_data)
             accuracy /= len(output_data)
-            tdiff = SGD.print_epoch(epoch, epochs, accuracy, curr_loss, start_time)
+            print("Epoch {} of {} done, took ~{:.3f} seconds".format(epoch + 1, epochs, tdiff))
             avg += tdiff
         avg /= epochs
         print()
@@ -104,7 +103,8 @@ class SGD(Optimizer):
         """
         curr_loss = 0
         accuracy = 0
-        for index in range(len(input_data)):
+        bar = tqdm(range(len(input_data)), miniters=len(input_data) // 100, colour="green")
+        for index in bar:
             output = output_data[index]
             output_result = model.evaluate(input=input_data[index])
             curr_loss += model.loss(values=output_result, expected=output)
@@ -114,9 +114,8 @@ class SGD(Optimizer):
             if output_result.argmax() == output.argmax():
                 accuracy += 1
 
-            # This print is very inefficient
-            if len(input_data) > 5000 and (index + 1) % (len(input_data) // 100) == 0:
-                SGD.print_progress(index, len(input_data), accuracy, curr_loss)
+            if (index) % int(len(input_data) / 100) == 0:
+                bar.set_postfix({"accuracy": accuracy / (index + 1), "loss": curr_loss / (index + 1)}, refresh=True)
 
             dLda_next = (model.loss.deriv)(output_result, output)
             # Iterate backwards, excluding last layer since we calculated dLda for that already
@@ -126,4 +125,4 @@ class SGD(Optimizer):
                 dLda_next = layer.grad["input"]
                 for param in layer.params.keys():
                     layer.params[param] -= layer.grad[param] * learning_rate
-        return curr_loss, accuracy
+        return curr_loss, accuracy, bar.format_dict["elapsed"]
