@@ -8,9 +8,19 @@ else:
 
 
 class SCCE(BaseLoss):
-    """
+    r"""
     Categorical Cross Entropy Class (CCE). Sparse by default,
     need to add non-sparse in the future.
+
+    Definition:
+
+    .. math::
+        L(\hat Y, Y) = -\sum_{i=1}^n Y \log_{b}(\hat Y)
+
+    Derivative:
+
+    .. math::
+        \frac{\partial L}{\partial \hat Y} = -\frac{1}{\ln(b)} \frac{Y}{\hat Y}
     """
 
     def __init__(self):
@@ -20,6 +30,7 @@ class SCCE(BaseLoss):
         self,
         values: int | float | np.integer | np.floating | list | np.ndarray,
         expected: int | float | np.integer | np.floating | list | np.ndarray,
+        log_base: float = 2,
     ) -> np.ndarray | np.float64:
         """
         Returns the CCE result of the expected and output values.
@@ -30,6 +41,8 @@ class SCCE(BaseLoss):
             output values
         expected : int | float | np.integer | np.floating | list | np.ndarray
             expected or correct values
+        log_base : float, optional
+            Log base used (default 2)
 
         Returns
         -------
@@ -38,23 +51,32 @@ class SCCE(BaseLoss):
         """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
-        values = np.clip(values, a_min=0.001, a_max=0.999)
-        expected = np.clip(expected, a_min=0.001, a_max=0.999)
-
-        return -(
-            (expected * np.log2(values) + (1 - expected) * np.log2(1 - values)).mean()
-        )
+        return -np.sum(expected * np.emath.logn(log_base, values))
 
     def deriv(
         self,
         values: np.ndarray | list,
         expected: np.ndarray | list,
+        log_base: float = 2,
     ) -> np.ndarray:
+        """
+        Given the loss gradient w.r.t. the output, calculates the loss
+        gradient w.r.t. the input and stores in the grad dictionary
+
+        Parameters
+        ----------
+        values : ndarray
+            Output values
+        expected : np.ndarray | list
+            Expected values
+        log_base : float, optional
+            Log base used (default 2)
+
+        Returns
+        -------
+        ndarray
+            Gradient array w.r.t. input
+        """        
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
-        values = np.clip(values, a_min=0.001, a_max=0.999)
-        expected = np.clip(expected, a_min=0.001, a_max=0.999)
-        return -(
-            expected / (values * np.log(2))
-            - (1 - expected) / ((1 - values) * np.log(2))
-        )
+        return (-1.0 / np.log(log_base)) * (expected / (values))

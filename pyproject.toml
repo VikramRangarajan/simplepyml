@@ -7,13 +7,14 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "simplepyml_VikramRangarajan"
+name = "simplepyml"
 version = "0.0.1"
 authors = [
     {name="Vikram Rangarajan", email="vikram.rangaraja@gmail.com"},
 ]
 description = "A small example package"
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -28,3 +29,10 @@ Homepage = "https://vikramrangarajan.github.io/simplepyml"
 Issues = "https://github.com/VikramRangarajan/simplepyml/issues"
 Documentation = "https://vikramrangarajan.github.io/simplepyml/docs.html"
 Repository = "https://github.com/VikramRangarajan/simplepyml"
+
+
+[tools.setuptools.packages.find]
+where = ["simplepyml"]
+include = ["simplepyml*"]
+exclude = ["test_dir"]
+namespaces = false

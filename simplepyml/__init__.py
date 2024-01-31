@@ -14,7 +14,7 @@ GPU modules are used.
 """
 
 try:
-    import cupy, cupyx
+    import cupy, cupyx  # noqa: E401, F401
 
     x = cupy.array([1, 2, 3])
     y = cupy.array([4, 5, 6])

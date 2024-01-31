@@ -70,8 +70,8 @@ class MLP:
         ndarray
             Output array
         """
-        inp = self.layers[0](input)
-        for i in range(1, len(self.layers)):
+        inp = input
+        for i in range(len(self.layers)):
             inp = self.layers[i](inp)
         return inp
 

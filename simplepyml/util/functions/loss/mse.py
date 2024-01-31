@@ -15,7 +15,8 @@ class MSE(BaseLoss):
 
     .. math::
         L=\frac{1}{n} \sum_{i=1}^n (Y_i - \hat Y_i)^2
-    """    
+    """
+
     def __init__(self):
         ...
 
@@ -38,7 +39,7 @@ class MSE(BaseLoss):
         -------
         ndarray | float64
             MSE result
-        """        
+        """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
 
@@ -66,7 +67,7 @@ class MSE(BaseLoss):
         -------
         ndarray
             :math:`\frac{\partial L}{\partial \hat Y}`
-        """        
+        """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
         return 2.0 / values.size * (values - expected)

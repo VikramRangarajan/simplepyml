@@ -29,8 +29,9 @@ extensions = [
 ]
 code_url = "https://github.com/VikramRangarajan/simplepyml/tree/main"
 
+
 def linkcode_resolve(domain, info):
-    if domain != 'py' or not info['module']:
+    if domain != "py" or not info["module"]:
         return None
 
     mod = importlib.import_module(info["module"])
@@ -57,6 +58,7 @@ def linkcode_resolve(domain, info):
 
     return f"{code_url}/{file}#L{start}-L{end}"
 
+
 templates_path = ["_templates"]
 exclude_patterns = ["_static"]
 
@@ -77,7 +79,7 @@ html_theme_options = {
 html_static_path = []
 
 autodoc_default_options = {
-    'special-members': '__call__',
+    "special-members": "__call__",
 }
 numpydoc_show_class_members = False
 autosummary_generate = True

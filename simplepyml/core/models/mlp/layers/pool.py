@@ -152,7 +152,7 @@ class Pooling(Layer):
             self._init_layer(input_array)
         self.input_array = input_array
         mat = input_array[self._cut_matrix_index_tuple].reshape(self._indexed_cut_shape)
-        return self.pool_function(mat, axis=self._over_axes, dtype=np.float64)
+        return self.pool_function(mat, axis=self._over_axes).astype(np.float64)
 
     def zoom(self, arr):
         """
@@ -171,7 +171,7 @@ class Pooling(Layer):
         """
         return np.pad(
             arr[self._zoom_view], self._zoom_pad_values, "constant", constant_values=0
-        )
+        ).astype(np.float64)
 
     def back_grad(self, dLda: np.ndarray):
         """

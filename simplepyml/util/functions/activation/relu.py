@@ -61,7 +61,13 @@ class Relu(BaseActivation):
         self, x: int | float | np.integer | np.floating | list | np.ndarray
     ) -> np.float64 | np.ndarray:
         """
-        Derivative of ReLU
+        Derivative of ReLU.
+
+        Notes
+        -----
+        Uses `np.heaviside`_ to calculate this step function
+
+        .. _np.heaviside: https://numpy.org/doc/stable/reference/generated/numpy.heaviside.html
 
         Parameters
         ----------
@@ -73,7 +79,4 @@ class Relu(BaseActivation):
         ndarray
             Derivative of ReLU applied on input
         """
-        y = np.array(x, dtype=np.float64)
-        y[y <= 0] = 0
-        y[y > 0] = 1
-        return y
+        return np.heaviside(x, 0).astype(np.float64)
