@@ -51,7 +51,7 @@ class SCCE(BaseLoss):
         """
         values = np.asarray(values, dtype=np.float64)
         expected = np.asarray(expected, dtype=np.float64)
-        return -np.sum(expected * np.log2(log_base, values) / np.log2(log_base))
+        return -np.sum(expected * np.log2(values) / np.log2(log_base))
 
     def deriv(
         self,
