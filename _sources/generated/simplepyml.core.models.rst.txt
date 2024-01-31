@@ -1,0 +1,12 @@
+simplepyml.core.models
+======================
+
+.. automodule:: simplepyml.core.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. toctree::
+   :maxdepth: -1
+
+   simplepyml.core.models.mlp

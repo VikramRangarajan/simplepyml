@@ -1,0 +1,12 @@
+simplepyml.util
+===============
+
+.. automodule:: simplepyml.util
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. toctree::
+   :maxdepth: -1
+
+   simplepyml.util.functions

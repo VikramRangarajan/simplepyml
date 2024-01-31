@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>simplepyml.core.models.mlp.layers.dense &#8212; simplepyml 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'generated/simplepyml.core.models.mlp.layers.dense';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="simplepyml.core.models.mlp.layers.dropout" href="simplepyml.core.models.mlp.layers.dropout.html" />
+    <link rel="prev" title="simplepyml.core.models.mlp.layers.conv" href="simplepyml.core.models.mlp.layers.conv.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SimplePyML</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../docs.html">
+                        Code Docs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../extra.html">
+                        Extra
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/VikramRangarajan/simplepyml/" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../docs.html">
+                        Code Docs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../extra.html">
+                        Extra
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/VikramRangarajan/simplepyml/" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="simplepyml.html">simplepyml</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="simplepyml.core.html">simplepyml.core</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="simplepyml.core.models.html">simplepyml.core.models</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l4 current active has-children"><a class="reference internal" href="simplepyml.core.models.mlp.html">simplepyml.core.models.mlp</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l5 current active has-children"><a class="reference internal" href="simplepyml.core.models.mlp.layers.html">simplepyml.core.models.mlp.layers</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.activation.html">simplepyml.core.models.mlp.layers.activation</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.conv.html">simplepyml.core.models.mlp.layers.conv</a></li>
+<li class="toctree-l6 current active"><a class="current reference internal" href="#">simplepyml.core.models.mlp.layers.dense</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.dropout.html">simplepyml.core.models.mlp.layers.dropout</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.layer.html">simplepyml.core.models.mlp.layers.layer</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.pool.html">simplepyml.core.models.mlp.layers.pool</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.reshape.html">simplepyml.core.models.mlp.layers.reshape</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.layers.softmax.html">simplepyml.core.models.mlp.layers.softmax</a></li>
+</ul>
+</li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="simplepyml.core.models.mlp.optimizers.html">simplepyml.core.models.mlp.optimizers</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.optimizers.adam.html">simplepyml.core.models.mlp.optimizers.adam</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.optimizers.optimizer.html">simplepyml.core.models.mlp.optimizers.optimizer</a></li>
+<li class="toctree-l6"><a class="reference internal" href="simplepyml.core.models.mlp.optimizers.sgd.html">simplepyml.core.models.mlp.optimizers.sgd</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.core.models.mlp.mlp.html">simplepyml.core.models.mlp.mlp</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="simplepyml.util.html">simplepyml.util</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="simplepyml.util.functions.html">simplepyml.util.functions</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="simplepyml.util.functions.activation.html">simplepyml.util.functions.activation</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.activation.activation.html">simplepyml.util.functions.activation.activation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.activation.linear.html">simplepyml.util.functions.activation.linear</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.activation.relu.html">simplepyml.util.functions.activation.relu</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.activation.sigmoid.html">simplepyml.util.functions.activation.sigmoid</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.activation.tanh.html">simplepyml.util.functions.activation.tanh</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="simplepyml.util.functions.loss.html">simplepyml.util.functions.loss</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.loss.loss.html">simplepyml.util.functions.loss.loss</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.loss.mse.html">simplepyml.util.functions.loss.mse</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simplepyml.util.functions.loss.scce.html">simplepyml.util.functions.loss.scce</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../docs.html" class="nav-link">Code Docs</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="simplepyml.core.models.mlp.layers.html" class="nav-link">simplepyml.core.models.mlp.layers</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">simplepyml.c...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-simplepyml.core.models.mlp.layers.dense">
+<span id="simplepyml-core-models-mlp-layers-dense"></span><h1>simplepyml.core.models.mlp.layers.dense<a class="headerlink" href="#module-simplepyml.core.models.mlp.layers.dense" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="simplepyml.core.models.mlp.layers.dense.Dense">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simplepyml.core.models.mlp.layers.dense.</span></span><span class="sig-name descname"><span class="pre">Dense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">integer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/VikramRangarajan/simplepyml/tree/main/simplepyml/core/models/mlp/layers/dense.py#L12-L142"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplepyml.core.models.mlp.layers.dense.Dense" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="simplepyml.core.models.mlp.layers.layer.html#simplepyml.core.models.mlp.layers.layer.Layer" title="simplepyml.core.models.mlp.layers.layer.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Layer</span></code></a></p>
+<p>Dense a.k.a. Fully Connected Layer.</p>
+<p>Definition:</p>
+<p>Takes an input, multiplies it with a weight matrix, adds a bias, and sends this result
+(z) through the activation function:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\vec{z} &amp;= W \cdot \vec{X} + \vec{b}\\\vec{Y} &amp;= \phi(\vec{z})\end{aligned}\end{align} \]</div>
+<p>To calculate the loss gradient w.r.t. the biases, weights, and input, we use these formulas:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\vec{\frac{\partial L}{\partial \vec b}} &amp;= \vec{\frac{\partial L}{\partial \vec Y}} \odot \phi'(\vec z)\\\vec{\frac{\partial L}{\partial W}} &amp;= \vec{\frac{\partial L}{\partial b}} \cdot \vec{X}^T\\\vec{\frac{\partial L}{\partial \vec X}} &amp;= W^T \cdot \vec{\frac{\partial L}{\partial \vec b}}\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>size</strong><span class="classifier">int</span></dt><dd><p>Output size.</p>
+</dd>
+<dt><strong>activation</strong><span class="classifier">function</span></dt><dd><p>Activation function. See <a class="reference internal" href="simplepyml.util.functions.activation.html#module-simplepyml.util.functions.activation" title="simplepyml.util.functions.activation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">activation</span></code></a> functions</p>
+</dd>
+<dt><strong>dropout</strong><span class="classifier">float</span></dt><dd><p>Currently useless, future plans to implement dropout.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>input_array</strong><span class="classifier">ndarray</span></dt><dd><p>Most recent input of layer</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">ndarray</span></dt><dd><p>Output of layer before put through activation function</p>
+</dd>
+<dt><strong>dropout</strong><span class="classifier">float</span></dt><dd><p>Currently useless.</p>
+</dd>
+<dt><strong>params</strong><span class="classifier">dict()</span></dt><dd><p>Contains weight and bias arrays</p>
+</dd>
+<dt><strong>grad</strong><span class="classifier">dict()</span></dt><dd><p>Empty dictionary, until <a class="reference internal" href="#simplepyml.core.models.mlp.layers.dense.Dense.back_grad" title="simplepyml.core.models.mlp.layers.dense.Dense.back_grad"><code class="xref py py-func docutils literal notranslate"><span class="pre">back_grad()</span></code></a> is called, after which:</p>
+<ul class="simple">
+<li><p>grad[“input”] is the loss gradient w.r.t. the input</p></li>
+<li><p>grad[“weights”] is the loss gradient w.r.t. the input</p></li>
+<li><p>grad[“biases”] is the loss gradient w.r.t. the biases</p></li>
+</ul>
+</dd>
+<dt><strong>param_num</strong><span class="classifier">int</span></dt><dd><p>Number of parameters in this layer (params[“weights”].size + params[“biases”].size)</p>
+</dd>
+<dt><strong>initialized</strong><span class="classifier">bool</span></dt><dd><p>Whether the layer has been initialized. False until called for the
+first time</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="simplepyml.core.models.mlp.layers.dense.Dense.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/VikramRangarajan/simplepyml/tree/main/simplepyml/core/models/mlp/layers/dense.py#L101-L117"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplepyml.core.models.mlp.layers.dense.Dense.__call__" title="Link to this definition">#</a></dt>
+<dd><p>Call self as a function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simplepyml.core.models.mlp.layers.dense.Dense.back_grad">
+<span class="sig-name descname"><span class="pre">back_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dLda</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/VikramRangarajan/simplepyml/tree/main/simplepyml/core/models/mlp/layers/dense.py#L119-L142"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simplepyml.core.models.mlp.layers.dense.Dense.back_grad" title="Link to this definition">#</a></dt>
+<dd><p>Backward gradient calculation. Given loss gradient w.r.t. the most
+recent output, calculate and store the loss gradient w.r.t. the most
+recent input, weights, and biases and stores in the grad dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dLda</strong><span class="classifier">ndarray</span></dt><dd><p>The loss gradient w.r.t. the most recent output. Must have shape
+equal to the output shape</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="simplepyml.core.models.mlp.layers.conv.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">simplepyml.core.models.mlp.layers.conv</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="simplepyml.core.models.mlp.layers.dropout.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">simplepyml.core.models.mlp.layers.dropout</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simplepyml.core.models.mlp.layers.dense.Dense"><code class="docutils literal notranslate"><span class="pre">Dense</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simplepyml.core.models.mlp.layers.dense.Dense.__call__"><code class="docutils literal notranslate"><span class="pre">Dense.__call__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simplepyml.core.models.mlp.layers.dense.Dense.back_grad"><code class="docutils literal notranslate"><span class="pre">Dense.back_grad()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/generated/simplepyml.core.models.mlp.layers.dense.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Vikram Rangarajan.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

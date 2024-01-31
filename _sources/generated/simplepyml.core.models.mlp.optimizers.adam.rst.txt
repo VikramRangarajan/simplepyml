@@ -1,0 +1,7 @@
+simplepyml.core.models.mlp.optimizers.adam
+==========================================
+
+.. automodule:: simplepyml.core.models.mlp.optimizers.adam
+   :members:
+   :undoc-members:
+   :show-inheritance:

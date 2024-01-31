@@ -1,0 +1,15 @@
+simplepyml.core.models.mlp.optimizers
+=====================================
+
+.. automodule:: simplepyml.core.models.mlp.optimizers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+
+   simplepyml.core.models.mlp.optimizers.adam
+   simplepyml.core.models.mlp.optimizers.optimizer
+   simplepyml.core.models.mlp.optimizers.sgd

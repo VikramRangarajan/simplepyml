@@ -1,0 +1,7 @@
+simplepyml.util.functions.activation.tanh
+=========================================
+
+.. automodule:: simplepyml.util.functions.activation.tanh
+   :members:
+   :undoc-members:
+   :show-inheritance:

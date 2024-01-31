@@ -1,0 +1,17 @@
+simplepyml.util.functions.activation
+====================================
+
+.. automodule:: simplepyml.util.functions.activation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+
+   simplepyml.util.functions.activation.activation
+   simplepyml.util.functions.activation.linear
+   simplepyml.util.functions.activation.relu
+   simplepyml.util.functions.activation.sigmoid
+   simplepyml.util.functions.activation.tanh

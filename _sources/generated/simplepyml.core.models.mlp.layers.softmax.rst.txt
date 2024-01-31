@@ -1,0 +1,7 @@
+simplepyml.core.models.mlp.layers.softmax
+=========================================
+
+.. automodule:: simplepyml.core.models.mlp.layers.softmax
+   :members:
+   :undoc-members:
+   :show-inheritance:
