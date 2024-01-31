@@ -1,6 +1,7 @@
 # Multi Layer Perceptron Model
 from simplepyml.core.models.mlp.layers.layer import Layer
 from simplepyml import USE_GPU
+import pickle
 
 if USE_GPU:
     import cupy as np
@@ -104,3 +105,19 @@ class MLP:
             *args,
             **kwargs,
         )
+
+    def save(self, filename):
+        """
+        Save model & weights using pickle.
+
+        Notes
+        -----
+        This is inherently unsafe due to the use of pickle.
+
+        Parameters
+        ----------
+        filename : str
+            File descriptor or path for the pickle file
+        """        
+        with open(filename, "wb") as f:
+            pickle.dump(self, f)
