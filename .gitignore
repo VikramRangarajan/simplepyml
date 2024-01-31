@@ -7,3 +7,5 @@ docs/build.bat
 docs/make.bat
 docs/Makefile
 docs/source/generated
+build
+*.egg-info
